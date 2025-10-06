@@ -1,0 +1,943 @@
+{
+  "profileId": "oeh:educationalOffering",
+  "version": "1.0.0",
+  "@context": {
+    "schema": "https://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "oeh": "http://w3id.org/openeduhub/vocabs/"
+  },
+  "output_template": {
+    "oeh:educationalOffering": [],
+    "schema:programType": [],
+    "schema:educationalProgramMode": [],
+    "schema:applicationStartDate": "",
+    "schema:applicationDeadline": "",
+    "schema:startDate": "",
+    "schema:endDate": "",
+    "schema:timeToComplete": "",
+    "schema:termDuration": "",
+    "schema:termsPerYear": null,
+    "schema:numberOfCredits": null,
+    "schema:typicalCreditsPerTerm": null,
+    "schema:maximumEnrollment": null,
+    "schema:programPrerequisites": [],
+    "schema:educationalCredentialAwarded": [],
+    "schema:occupationalCredentialAwarded": [],
+    "schema:financialAidEligible": [],
+    "schema:hasCourse": [],
+    "schema:provider": {
+      "name": "",
+      "url": ""
+    },
+    "schema:offers": []
+  },
+  "fields": [
+    {
+      "id": "oeh:educationalOffering",
+      "group": "classification",
+      "prompt": {
+        "label": "Bildungsangebot-Typ",
+        "description": "Wähle(n) Sie den zutreffenden Typ/Form des Bildungsangebots.",
+        "examples": [
+          "Bachelor-Studiengang",
+          "Duale Ausbildung",
+          "Sprachkurs",
+          "Mehrmoduliger Lehrgang"
+        ]
+      },
+      "system": {
+        "path": "oeh:educationalOffering",
+        "uri": "oeh:educationalOffering",
+        "datatype": "array",
+        "multiple": true,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "vocabulary": {
+          "type": "skos",
+          "scheme": "http://w3id.org/openeduhub/vocabs/educationalOffering/",
+          "hierarchical": false,
+          "concepts": [
+            {
+              "label": "Bildungsgang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/educational-program"
+            },
+            {
+              "label": "Schulbildungsgang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/school-program"
+            },
+            {
+              "label": "Grundschulbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/primary-education"
+            },
+            {
+              "label": "Weiterführende Schule",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/secondary-education"
+            },
+            {
+              "label": "Berufsvorbereitende Bildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/career-preparation"
+            },
+            {
+              "label": "Ausbildungsgang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/vocational-program"
+            },
+            {
+              "label": "Duale Ausbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/dual-training"
+            },
+            {
+              "label": "Schulische Berufsausbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/school-based-training"
+            },
+            {
+              "label": "Fachschulausbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/technical-college"
+            },
+            {
+              "label": "Umschulung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/retraining-program"
+            },
+            {
+              "label": "Studiengang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/degree-program"
+            },
+            {
+              "label": "Bachelor-Studiengang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/bachelor-program"
+            },
+            {
+              "label": "Master-Studiengang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/master-program"
+            },
+            {
+              "label": "Staatsexamen-Studiengang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/state-exam-program"
+            },
+            {
+              "label": "Diplom-/Magister-Studiengang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/diploma-program"
+            },
+            {
+              "label": "Promotionsstudium",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/doctoral-program"
+            },
+            {
+              "label": "Bildungsprogramm",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/education-program"
+            },
+            {
+              "label": "Fortbildung/Aufstiegsqualifikation",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/continuing-education"
+            },
+            {
+              "label": "Aufstiegsfortbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/advancement-training"
+            },
+            {
+              "label": "Anpassungsfortbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/adaptation-training"
+            },
+            {
+              "label": "Kammer-Zertifikat",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/chamber-certificate"
+            },
+            {
+              "label": "Lehrgang/Kurs-Serie",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/course-series"
+            },
+            {
+              "label": "Mehrmoduliger Lehrgang",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/multimodule-course"
+            },
+            {
+              "label": "Branchenzertifizierung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/industry-certification"
+            },
+            {
+              "label": "Anbieter-Zertifikatskurs",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/provider-certificate"
+            },
+            {
+              "label": "Rehabilitative Programme",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/rehabilitation-program"
+            },
+            {
+              "label": "Berufliche Rehabilitation",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/vocational-rehabilitation"
+            },
+            {
+              "label": "Nachqualifizierung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/requalification"
+            },
+            {
+              "label": "Einzelangebot",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/individual-offering"
+            },
+            {
+              "label": "Kurs/Seminar",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/course-seminar"
+            },
+            {
+              "label": "Fachkurs/Spezialisierung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/specialist-course"
+            },
+            {
+              "label": "Sprachkurs",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/language-course"
+            },
+            {
+              "label": "IT-Schulung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/it-training"
+            },
+            {
+              "label": "Soft-Skills-Training",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/soft-skills-training"
+            },
+            {
+              "label": "Kreativkurs",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/creative-course"
+            },
+            {
+              "label": "Gesundheits-/Fitnesskurs",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/health-fitness-course"
+            },
+            {
+              "label": "Workshop/Training",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/workshop-training"
+            },
+            {
+              "label": "Praktisches Training",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/practical-training"
+            },
+            {
+              "label": "Kompetenz-Workshop",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/competence-workshop"
+            },
+            {
+              "label": "Methodentraining",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/method-training"
+            },
+            {
+              "label": "Lizenz-/Befähigungsschulung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/license-qualification"
+            },
+            {
+              "label": "Führerschein-Ausbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/driver-training"
+            },
+            {
+              "label": "Sicherheitsschulung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/safety-training"
+            },
+            {
+              "label": "Compliance-Training",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/compliance-training"
+            },
+            {
+              "label": "Ergänzungsangebot",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/supplementary-offering"
+            },
+            {
+              "label": "Nachhilfe/Förderung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/tutoring-support"
+            },
+            {
+              "label": "Lernunterstützung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/learning-support"
+            },
+            {
+              "label": "Prüfungsvorbereitung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/exam-preparation"
+            },
+            {
+              "label": "Spezielle Förderung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/special-support"
+            },
+            {
+              "label": "Beratung/Coaching",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/counseling-coaching"
+            },
+            {
+              "label": "Bildungsberatung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/educational-counseling"
+            },
+            {
+              "label": "Laufbahnberatung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/career-counseling"
+            },
+            {
+              "label": "Lerncoaching",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/learning-coaching"
+            },
+            {
+              "label": "Selbstlernformat",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/self-learning"
+            },
+            {
+              "label": "Online-Kurs (selbstgesteuert)",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/online-course-self"
+            },
+            {
+              "label": "Lernmaterial",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/learning-material"
+            },
+            {
+              "label": "E-Learning-Modul",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/elearning-module"
+            },
+            {
+              "label": "Kinder-/Jugendbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/youth-education"
+            },
+            {
+              "label": "Frühkindliches Angebot",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/early-childhood-offering"
+            },
+            {
+              "label": "Frühförderung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/early-support"
+            },
+            {
+              "label": "Eltern-Kind-Kurs",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/parent-child-course"
+            },
+            {
+              "label": "Spielgruppe (bildungsorientiert)",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/educational-playgroup"
+            },
+            {
+              "label": "Vorschulprogramm",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/preschool-program"
+            },
+            {
+              "label": "Außerschulisches Angebot",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/extracurricular-offering"
+            },
+            {
+              "label": "Musikunterricht/Musikschule",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/music-education"
+            },
+            {
+              "label": "Sportliche Bildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/sports-education"
+            },
+            {
+              "label": "Kreative Bildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/creative-education"
+            },
+            {
+              "label": "Technische Bildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/technical-education"
+            },
+            {
+              "label": "Sprachkurse für Kinder",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/youth-language-course"
+            },
+            {
+              "label": "Ergänzende Schulbildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/supplementary-school-education"
+            },
+            {
+              "label": "Nachhilfe",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/youth-tutoring"
+            },
+            {
+              "label": "Lernförderung (Jugend)",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/learning-support-youth"
+            },
+            {
+              "label": "Begabtenförderung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/gifted-education"
+            },
+            {
+              "label": "Ferienakademie",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/vacation-academy"
+            },
+            {
+              "label": "Jugendbildung (Organisation)",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/youth-organization"
+            },
+            {
+              "label": "Jugendverbandsarbeit",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/youth-association-work"
+            },
+            {
+              "label": "Demokratiebildung",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/democracy-education"
+            },
+            {
+              "label": "Internationale Begegnungen",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/international-exchange"
+            },
+            {
+              "label": "Erlebnispädagogik",
+              "uri": "http://w3id.org/openeduhub/vocabs/educationalOffering/adventure-education"
+            }
+          ]
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true,
+          "map_labels_to_uris": true
+        }
+      }
+    },
+    {
+      "id": "schema:programType",
+      "group": "program",
+      "prompt": {
+        "label": "Programm-Typ (frei oder kontrolliertes Vokabular)",
+        "description": "Art des Programms (z. B. Präsenz, Praktikum, dual, berufsbegleitend).",
+        "examples": [
+          "berufsbegleitend",
+          "Vollzeit",
+          "Teilzeit",
+          "internship",
+          "classroom"
+        ]
+      },
+      "system": {
+        "path": "schema:programType",
+        "uri": "schema:programType",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:educationalProgramMode",
+      "group": "program",
+      "prompt": {
+        "label": "Programmmodus",
+        "description": "Medium/Modus des Programms (online, onsite, blended; synchron/asynchron; Voll-/Teilzeit).",
+        "examples": [
+          "online",
+          "onsite",
+          "blended",
+          "asynchronous",
+          "full-time",
+          "part-time"
+        ]
+      },
+      "system": {
+        "path": "schema:educationalProgramMode",
+        "uri": "schema:educationalProgramMode",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:applicationStartDate",
+      "group": "admissions",
+      "prompt": {
+        "label": "Bewerbungsstart",
+        "description": "Datum, ab dem Bewerbungen entgegengenommen werden (ISO 8601).",
+        "examples": [
+          "2025-01-15"
+        ]
+      },
+      "system": {
+        "path": "schema:applicationStartDate",
+        "uri": "schema:applicationStartDate",
+        "datatype": "date",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": {
+          "regex": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:applicationDeadline",
+      "group": "admissions",
+      "prompt": {
+        "label": "Bewerbungsschluss",
+        "description": "Datum (ISO 8601) oder Freitext für flexible Fristen (z. B. 'Rolling Admission').",
+        "examples": [
+          "2025-07-31",
+          "rolling admission"
+        ]
+      },
+      "system": {
+        "path": "schema:applicationDeadline",
+        "uri": "schema:applicationDeadline",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:startDate",
+      "group": "schedule",
+      "prompt": {
+        "label": "Programmstart",
+        "description": "Startdatum des Programms (ISO 8601).",
+        "examples": [
+          "2025-10-01"
+        ]
+      },
+      "system": {
+        "path": "schema:startDate",
+        "uri": "schema:startDate",
+        "datatype": "date",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": {
+          "regex": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:endDate",
+      "group": "schedule",
+      "prompt": {
+        "label": "Programmende",
+        "description": "Enddatum des Programms (ISO 8601).",
+        "examples": [
+          "2028-09-30"
+        ]
+      },
+      "system": {
+        "path": "schema:endDate",
+        "uri": "schema:endDate",
+        "datatype": "date",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": {
+          "regex": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:timeToComplete",
+      "group": "workload",
+      "prompt": {
+        "label": "Regelstudienzeit / Dauer",
+        "description": "Erwartete Gesamtdauer bis Abschluss (ISO 8601 Duration).",
+        "examples": [
+          "P3Y",
+          "P18M"
+        ]
+      },
+      "system": {
+        "path": "schema:timeToComplete",
+        "uri": "schema:timeToComplete",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": {
+          "regex": "^P(T?\\d+[YMWDHS].*)?$"
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:termDuration",
+      "group": "workload",
+      "prompt": {
+        "label": "Dauer einer Studienperiode",
+        "description": "Dauer einer Periode (Semester/Quartal) als ISO 8601 Duration.",
+        "examples": [
+          "P6M",
+          "P3M"
+        ]
+      },
+      "system": {
+        "path": "schema:termDuration",
+        "uri": "schema:termDuration",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": {
+          "regex": "^P(T?\\d+[YMWDHS].*)?$"
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:termsPerYear",
+      "group": "workload",
+      "prompt": {
+        "label": "Perioden pro Jahr",
+        "description": "Anzahl an Studienperioden pro Jahr (z. B. 2 Semester).",
+        "examples": [
+          2,
+          3,
+          4
+        ]
+      },
+      "system": {
+        "path": "schema:termsPerYear",
+        "uri": "schema:termsPerYear",
+        "datatype": "number",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true
+      }
+    },
+    {
+      "id": "schema:numberOfCredits",
+      "group": "credits",
+      "prompt": {
+        "label": "Gesamt-Credits",
+        "description": "Anzahl der Credits/Leistungspunkte für das Programm (Integer).",
+        "examples": [
+          180,
+          120,
+          30
+        ]
+      },
+      "system": {
+        "path": "schema:numberOfCredits",
+        "uri": "schema:numberOfCredits",
+        "datatype": "integer",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true
+      }
+    },
+    {
+      "id": "schema:typicalCreditsPerTerm",
+      "group": "credits",
+      "prompt": {
+        "label": "Credits pro Periode (Vollzeit)",
+        "description": "Typische Credits je Studienperiode für Vollzeit.",
+        "examples": [
+          30
+        ]
+      },
+      "system": {
+        "path": "schema:typicalCreditsPerTerm",
+        "uri": "schema:typicalCreditsPerTerm",
+        "datatype": "integer",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true
+      }
+    },
+    {
+      "id": "schema:maximumEnrollment",
+      "group": "admissions",
+      "prompt": {
+        "label": "Maximale Kohortengröße",
+        "description": "Maximale Anzahl Studierender im Programm.",
+        "examples": [
+          120
+        ]
+      },
+      "system": {
+        "path": "schema:maximumEnrollment",
+        "uri": "schema:maximumEnrollment",
+        "datatype": "integer",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true
+      }
+    },
+    {
+      "id": "schema:programPrerequisites",
+      "group": "admissions",
+      "prompt": {
+        "label": "Zugangsvoraussetzungen",
+        "description": "Freitext oder knappe Aufzählung der Voraussetzungen (z. B. Abitur, B2 Deutsch, Vorpraktikum).",
+        "examples": [
+          "Allgemeine Hochschulreife",
+          "B2 Deutsch",
+          "6-wöchiges Vorpraktikum"
+        ]
+      },
+      "system": {
+        "path": "schema:programPrerequisites",
+        "uri": "schema:programPrerequisites",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "fulltext": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:educationalCredentialAwarded",
+      "group": "outcomes",
+      "prompt": {
+        "label": "Verliehener Bildungsabschluss",
+        "description": "Bezeichnung des Abschlusses/Zertifikats (Text oder URL).",
+        "examples": [
+          "B.Sc.",
+          "Meisterbrief",
+          "IHK-Zertifikat",
+          "https://example.org/credential/xyz"
+        ]
+      },
+      "system": {
+        "path": "schema:educationalCredentialAwarded",
+        "uri": "schema:educationalCredentialAwarded",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:occupationalCredentialAwarded",
+      "group": "outcomes",
+      "prompt": {
+        "label": "Berufs-/Fachzertifikat",
+        "description": "Verliehenes berufliches Zertifikat (Text oder URL).",
+        "examples": [
+          "Pflegefachkraft",
+          "CCNA",
+          "Meister im Handwerk"
+        ]
+      },
+      "system": {
+        "path": "schema:occupationalCredentialAwarded",
+        "uri": "schema:occupationalCredentialAwarded",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:financialAidEligible",
+      "group": "fees",
+      "prompt": {
+        "label": "Förder-/Finanzierungsmöglichkeiten",
+        "description": "Mögliche Förderungen oder Stipendien (Text).",
+        "examples": [
+          "BAföG",
+          "Bildungsgutschein",
+          "Begabtenförderung"
+        ]
+      },
+      "system": {
+        "path": "schema:financialAidEligible",
+        "uri": "schema:financialAidEligible",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:hasCourse",
+      "group": "courses",
+      "prompt": {
+        "label": "Kurse im Programm",
+        "description": "Liste von Kursen, die das Programm konstituieren (Kurzform).",
+        "examples": [
+          {
+            "name": "Programmierung 1",
+            "schema:courseCode": "CS101"
+          },
+          {
+            "name": "Datenbanken",
+            "schema:courseCode": "DB201"
+          }
+        ]
+      },
+      "system": {
+        "path": "schema:hasCourse",
+        "uri": "schema:hasCourse",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "items": {
+          "type": "object",
+          "shape": {
+            "name": {
+              "type": "string"
+            },
+            "schema:courseCode": {
+              "type": "string"
+            },
+            "schema:coursePrerequisites": {
+              "type": "array"
+            }
+          }
+        },
+        "index": {
+          "fulltext": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    },
+    {
+      "id": "schema:provider",
+      "group": "provider",
+      "prompt": {
+        "label": "Anbieter",
+        "description": "Organisation oder Person, die das Programm anbietet.",
+        "examples": [
+          {
+            "name": "FH Musterstadt",
+            "url": "https://fh-musterstadt.example"
+          }
+        ]
+      },
+      "system": {
+        "path": "schema:provider",
+        "uri": "schema:provider",
+        "datatype": "object",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "items": {
+          "type": "object",
+          "shape": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true
+        }
+      }
+    },
+    {
+      "id": "schema:offers",
+      "group": "pricing",
+      "prompt": {
+        "label": "Preise/Angebote",
+        "description": "Optionale Angebots-/Preisinfos für das Programm.",
+        "examples": [
+          {
+            "price": 1500,
+            "priceCurrency": "EUR",
+            "url": "https://example.org/enroll"
+          }
+        ]
+      },
+      "system": {
+        "path": "schema:offers",
+        "uri": "schema:offers",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "items": {
+          "type": "object",
+          "shape": {
+            "price": {
+              "type": "number"
+            },
+            "priceCurrency": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "index": {
+          "keyword": true
+        },
+        "normalization": {
+          "trim": true,
+          "deduplicate": true
+        }
+      }
+    }
+  ]
+}
