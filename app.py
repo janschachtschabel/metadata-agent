@@ -10,12 +10,11 @@ from models import WorkflowState, WorkflowPhase, Message
 # Load environment variables
 load_dotenv()
 
-# Initialize agent
-API_KEY = os.getenv("OPENAI_API_KEY", "")
-if not API_KEY:
-    raise ValueError("OPENAI_API_KEY not found in environment variables. Please create a .env file.")
-
-agent = MetadataAgent(api_key=API_KEY, model="gpt-5-mini")
+# Initialize agent (all settings from .env)
+try:
+    agent = MetadataAgent()
+except ValueError as e:
+    raise ValueError(f"Configuration error: {e}. Please check your .env file.")
 
 # Global state (in production, use session management)
 workflow_state = WorkflowState()
@@ -251,7 +250,6 @@ with gr.Blocks(title="Metadaten-Extraktion Agent", theme=gr.themes.Soft(), css=c
     
         # Right column: Results
         with gr.Column(scale=1):
-            gr.Markdown("## 📊 Zwischenergebnisse")
             intermediate_results = gr.Markdown(
                 value="*Noch keine Daten extrahiert*",
                 label="Extrahierte Daten"

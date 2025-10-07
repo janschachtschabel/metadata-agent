@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/openeduhub/schemas/lernmaterial-zusatz.json",
+  "title": "Zusatzschema Lernmaterial (OpenEduHub)",
+  "description": "Ergänzende Eigenschaften für Lernmaterialien. Dieses Schema erweitert ein bestehendes Core-Schema, ohne Core-Felder zu überschreiben.",
+  "type": "object",
+  "$comment": "Tipp: Falls ihr das Core-Schema referenzieren wollt, könnt ihr dieses Schema via allOf mit dem Core kombinieren.",
+  "additionalProperties": true,
+
+  "properties": {
+    "new_lrt": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/skosConceptRef" },
+      "description": "Lernressourcentyp(e) aus http://w3id.org/openeduhub/vocabs/new_lrt/ (SKOS).",
+      "$comment": "Erlaubt werden URIs auf SKOS-Konzepte (oder Objekte mit id/prefLabel)."
+    },
+
+    "ext_study_subjects": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/skosConceptRef" },
+      "description": "Zugeordnete Studienfächer aus der Destatis-Hochschulfächersystematik (http://w3id.org/openeduhub/vocabs/hochschulfaechersystematik/)."
+    },
+
+    "ext_didactic_method": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/skosConceptRef" },
+      "description": "Verwendete didaktische Methode(n) als SKOS-Konzepte (z. B. Zweig 'Methode' im new_lrt-Vokabular)."
+    },
+
+    "ext_delivery_mode": {
+      "type": "string",
+      "enum": ["online", "praesenz", "blended"],
+      "description": "Durchführungsmodus der Nutzung bzw. des Angebots."
+    },
+
+    "ext_learning_setting": {
+      "type": "string",
+      "enum": ["schulisch", "hochschule", "beruflich", "weiterbildung", "informell"],
+      "description": "Lernkontext/Setting."
+    },
+
+    "ext_audience": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["lernde", "lehrkraefte", "eltern", "ausbilder_in", "verwaltung", "oeffentlichkeit"]
+      },
+      "description": "Zielgruppe(n)."
+    },
+
+    "ext_typical_age_range": {
+      "type": "string",
+      "pattern": "^[0-9]{1,2}-[0-9]{1,2}$",
+      "description": "Typischer Altersbereich im Format 'min-max', z. B. '10-12'."
+    },
+
+    "ext_time_required": {
+      "type": "string",
+      "pattern": "^P(T(?=.)(\\d+H)?(\\d+M)?(\\d+S)?)$|^P(\\d+W)$|^P(\\d+Y)?(\\d+M)?(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+S)?)?$",
+      "description": "Geschätzter Bearbeitungsaufwand als ISO 8601 Dauer (z. B. 'PT45M', 'P2D')."
+    },
+
+    "ext_group_size": {
+      "type": "object",
+      "properties": {
+        "min": { "type": "integer", "minimum": 1 },
+        "max": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["min"],
+      "additionalProperties": false,
+      "description": "Geeignete Gruppengröße in Personen."
+    },
+
+    "ext_prerequisites": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ],
+      "description": "Vorkenntnisse/Voraussetzungen in freiem Text."
+    },
+
+    "ext_required_tools": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          { "$ref": "#/$defs/skosConceptRef" }
+        ]
+      },
+      "description": "Erforderliche Tools/Software (frei oder als SKOS-Referenz)."
+    },
+
+    "ext_assessment_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["selbsttest", "klausur", "projektbewertung", "peer_review", "mündlich", "praxis"]
+      },
+      "description": "Verwendete Bewertungs-/Prüfungsform(en)."
+    },
+
+    "ext_alignment": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/alignmentObject" },
+      "description": "Fach-/Kompetenz-/Lehrplan-Alignments (z. B. Kompetenzen, Curricula, Rahmenlehrpläne)."
+    },
+
+    "ext_accessibility": {
+      "type": "object",
+      "properties": {
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "captions", "transcript", "audio_description", "alt_text",
+              "sign_language", "high_contrast", "keyboard_navigation",
+              "long_description", "closed_captions"
+            ]
+          }
+        },
+        "hazards": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["flashing", "motion_simulation", "audio_auto"] }
+        },
+        "conformance": {
+          "type": "string",
+          "enum": ["wcag20_a", "wcag20_aa", "wcag21_aa", "none"]
+        }
+      },
+      "additionalProperties": false,
+      "description": "Barrierefreiheitsmerkmale."
+    },
+
+    "ext_certification": {
+      "type": "object",
+      "properties": {
+        "offersCertificate": { "type": "boolean" },
+        "certificateName": { "type": "string" },
+        "issuer": { "type": "string" }
+      },
+      "additionalProperties": false,
+      "description": "Zertifikats-/Bescheinigungsinformationen (falls zutreffend)."
+    },
+
+    "ext_costs": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      },
+      "required": ["amount", "currency"],
+      "additionalProperties": false,
+      "description": "Kostenangabe (falls nicht OER-kostenfrei)."
+    }
+  },
+
+  "required": ["new_lrt"],
+
+  "$defs": {
+    "skosConceptRef": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "$comment": "Bevorzugt: direkte URI des SKOS-Konzepts (z. B. http://w3id.org/openeduhub/vocabs/new_lrt/… oder …/hochschulfaechersystematik/…)"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string", "format": "uri" },
+            "prefLabel": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z]{2}(-[A-Z]{2})?$": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": ["id"],
+          "additionalProperties": true,
+          "$comment": "Alternative: Objekt mit id (URI) und optionalen Sprachlabels."
+        }
+      ]
+    },
+
+    "alignmentObject": {
+      "type": "object",
+      "properties": {
+        "targetFramework": { "type": "string", "description": "Name des Rahmenwerks/Lehrplans/Kompetenzmodells." },
+        "targetUri": { "type": "string", "format": "uri", "description": "URI des Ziels (Kompetenz/Lehrplanstelle/etc.)." },
+        "targetCode": { "type": "string", "description": "Lokaler Code/ID innerhalb des Rahmenwerks." },
+        "relationType": {
+          "type": "string",
+          "enum": ["teaches", "assesses", "requires", "alignsTo"],
+          "description": "Art der Beziehung."
+        },
+        "description": { "type": "string" }
+      },
+      "required": ["relationType"],
+      "additionalProperties": false
+    }
+  },
+
+  "examples": [
+    {
+      "new_lrt": [
+        "http://w3id.org/openeduhub/vocabs/new_lrt/36e68792-6159-481d-a97b-2c00901f4f78"
+      ],
+      "ext_study_subjects": [
+        "http://w3id.org/openeduhub/vocabs/hochschulfaechersystematik/n37"
+      ],
+      "ext_didactic_method": [
+        { "id": "http://w3id.org/openeduhub/vocabs/new_lrt/59c470f9-cea2-4a26-bc10-f46f3764af24", "prefLabel": { "de": "Gruppenarbeit" } }
+      ],
+      "ext_delivery_mode": "blended",
+      "ext_time_required": "PT90M",
+      "ext_group_size": { "min": 2, "max": 6 },
+      "ext_prerequisites": ["Grundlagen Statistik", "Tabellenkalkulation"],
+      "ext_required_tools": ["http://w3id.org/openeduhub/vocabs/new_lrt/267e6b73-595c-47ad-9e2e-8573239a2d68"],
+      "ext_alignment": [
+        {
+          "targetFramework": "KMK Bildungsstandards Mathematik Sek I",
+          "targetCode": "M1.2",
+          "relationType": "teaches"
+        }
+      ],
+      "ext_accessibility": {
+        "features": ["captions", "keyboard_navigation"],
+        "conformance": "wcag21_aa"
+      }
+    }
+  ]
+}

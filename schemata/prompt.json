@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/prompt.schema.json",
+  "title": "Prompt",
+  "description": "Metadaten-Schema für KI-Prompts in Bildungskontexten.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stabile Identifier/Node-ID",
+      "examples": ["urn:uuid:2c7c2f4c-1b2e-4a51-9c51-6a3b7b7c9d21"]
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Öffentliche URL zur Ressource",
+      "x-schemaorg": "url"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titel der Ressource",
+      "x-schemaorg": "name"
+    },
+    "language": {
+      "type": "string",
+      "description": "Sprache der Ressource (BCP-47)",
+      "examples": ["de", "de-DE", "en"],
+      "x-schemaorg": "inLanguage"
+    },
+    "description": {
+      "type": "string",
+      "description": "Kurzbeschreibung",
+      "x-schemaorg": "description"
+    },
+    "thumbnailUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Vorschaubild",
+      "x-schemaorg": "thumbnailUrl"
+    },
+    "classification": {
+      "type": "object",
+      "description": "Inhaltliche Einordnung",
+      "properties": {
+        "resourceType": {
+          "const": "Prompt",
+          "description": "Kategorie/Typ des Inhalts (fix: Prompt)"
+        },
+        "subject": {
+          "type": "array",
+          "description": "Fach-/Sachgebiet (kontrolliert oder frei)",
+          "items": { "type": "string" },
+          "x-schemaorg": "about"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Schlagworte (fest und frei)",
+          "items": { "type": "string" },
+          "x-schemaorg": "keywords"
+        },
+        "educationLevel": {
+          "type": "array",
+          "description": "Bildungsstufe (z. B. Sek I, Hochschule, Berufsausbildung)",
+          "items": { "type": "string" },
+          "x-schemaorg": "educationalLevel"
+        },
+        "typicalAgeRange": {
+          "type": "string",
+          "description": "Typisches Alter (z. B. 10-12)",
+          "x-schemaorg": "typicalAgeRange"
+        },
+        "fsk": {
+          "type": "string",
+          "description": "FSK/Altersfreigabe falls relevant"
+        },
+        "targetAudience": {
+          "type": "array",
+          "description": "Zielgruppe",
+          "items": { "type": "string" },
+          "x-schemaorg": "audience"
+        },
+        "learningObjectives": {
+          "type": "array",
+          "description": "Lernziele / Kompetenzen (AlignmentObjects)",
+          "items": { "$ref": "#/$defs/alignmentObject" },
+          "x-schemaorg": "educationalAlignment"
+        },
+        "curriculumTopics": {
+          "type": "array",
+          "description": "Lehrplanthemen",
+          "items": { "type": "string" }
+        },
+        "languageLevel": {
+          "type": "string",
+          "description": "Sprachniveau (z. B. GER A2)",
+          "x-schemaorg": "educationalLevel"
+        }
+      },
+      "additionalProperties": false
+    },
+    "promptCore": {
+      "type": "object",
+      "description": "Spezielle Metadaten für Prompts",
+      "properties": {
+        "prompt": { "type": "string", "description": "Anweisung / Prompttext" },
+        "negativePrompt": { "type": "string", "description": "Ausschlusskriterien" },
+        "scenario": {
+          "type": "string",
+          "description": "Anwendungsszenario",
+          "enum": [
+            "Aufgaben erstellen", "Prüfung konzipieren", "KI-Tutor",
+            "Korrektur/Feedback", "Metadaten-Generierung", "Rollenspiel/Simulation",
+            "Quiz/Entscheidungsbaum", "Inhalt zusammenfassen", "Klassifizieren"
+          ]
+        },
+        "function": {
+          "type": "string",
+          "description": "Funktion/Capability",
+          "enum": [
+            "Textgenerierung", "Bildgenerierung", "Übersetzung",
+            "Codegenerierung", "Datenauswertung", "Textzusammenfassung",
+            "Klassifizierung", "Extraktion", "Bewertung/Scoring",
+            "Anpassung/Adaptiv", "Chatbot/Interaktiv"
+          ]
+        },
+        "promptType": {
+          "type": "string",
+          "description": "Untertyp",
+          "enum": ["Generativ", "Analytisch", "Adaptiv", "Interaktiv"],
+          "x-schemaorg": "learningResourceType"
+        },
+        "inputType": {
+          "type": "string",
+          "description": "Eingabeformat",
+          "enum": ["text", "image", "video", "audio", "code", "mixed"]
+        },
+        "sourceMedia": {
+          "type": "array",
+          "description": "Eingabequellen/Uploads/URIs",
+          "items": {
+            "type": "string",
+            "description": "URI oder Dateiname"
+          }
+        },
+        "targetOutputFormat": {
+          "type": "string",
+          "description": "Art der Ausgabe",
+          "enum": ["text", "bild", "audio", "video", "code", "struktur"],
+          "x-schemaorg": "encodingFormat"
+        },
+        "testedModels": {
+          "type": "array",
+          "description": "Getestete Modelle",
+          "items": { "type": "string" },
+          "examples": [["gpt-4o", "claude-3-5", "suno"]]
+        }
+      },
+      "required": ["prompt", "function"],
+      "additionalProperties": false
+    },
+    "technical": {
+      "type": "object",
+      "description": "Technische Parameter (API-nah)",
+      "properties": {
+        "max_tokens": { "type": "integer", "minimum": 1, "x-schemaorg": "wordCount" },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+        "top_p": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "legal": {
+      "type": "object",
+      "description": "Rechtliche Bewertung (Prompt und/oder Ergebnis)",
+      "properties": {
+        "criminalLawOk": { "type": "boolean", "description": "Strafrecht unbedenklich" },
+        "copyrightOk": { "type": "boolean", "description": "Urheberrecht geprüft" },
+        "youthProtectionOk": { "type": "boolean", "description": "Jugendschutz geprüft" },
+        "personalityRightsOk": { "type": "boolean", "description": "Persönlichkeitsrechte geprüft" },
+        "dataProtectionOk": { "type": "boolean", "description": "Datenschutz geprüft" },
+        "notes": { "type": "string", "description": "Bemerkungen/Einschränkungen" }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "description": "Qualitätsmerkmale (falls bewertet)",
+      "properties": {
+        "providerReputation": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "access": {
+      "type": "object",
+      "description": "Zugänglichkeit & Nutzung",
+      "properties": {
+        "open": { "type": "boolean", "description": "Offen zugänglich" },
+        "interoperability": { "type": "string" },
+        "advertising": { "type": "boolean" },
+        "costs": { "type": "string" },
+        "loginRequired": { "type": "boolean" },
+        "accessibility": { "type": "string", "description": "Barrierefreiheit" },
+        "usability": { "type": "string" },
+        "itSecurity": { "type": "string" },
+        "findability": { "type": "string" },
+        "availabilityEnd": {
+          "type": "string",
+          "format": "date",
+          "description": "Datum Verfügbarkeitsende"
+        }
+      },
+      "additionalProperties": false
+    },
+    "license": {
+      "type": "object",
+      "description": "Lizenz & Quellen",
+      "properties": {
+        "license": { "type": "string", "x-schemaorg": "license" },
+        "creditLine": { "type": "string", "description": "Namensnennungstext" },
+        "source": { "type": "string", "description": "Herkunft/Bezugsquelle", "x-schemaorg": "isBasedOn" },
+        "contributors": {
+          "type": "array",
+          "description": "Weitere Beteiligte",
+          "items": { "$ref": "#/$defs/contributor" },
+          "x-schemaorg": "contributor"
+        },
+        "creator": { "type": "string", "description": "Urheber:in", "x-schemaorg": "creator" },
+        "publisher": { "type": "string", "description": "Organisation/Anbieter", "x-schemaorg": "publisher" }
+      },
+      "additionalProperties": false
+    },
+    "oer": {
+      "type": "object",
+      "description": "OER-spezifische Angaben",
+      "properties": {
+        "oerPracticeCategories": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "curation": {
+      "type": "object",
+      "description": "Erschließung & Kuratierung",
+      "properties": {
+        "metadataContributors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contributor" }
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "relations": {
+      "type": "object",
+      "description": "Verknüpfungen zu anderen Ressourcentypen",
+      "properties": {
+        "isPartOfDataset": {
+          "type": "string",
+          "description": "Prompt-Katalog/Dataset",
+          "x-schemaorg": "isPartOf"
+        },
+        "relatedMedia": {
+          "type": "array",
+          "description": "Verknüpfte Medienobjekte",
+          "items": { "$ref": "#/$defs/mediaObject" }
+        },
+        "softwareBinding": {
+          "type": "string",
+          "description": "Gebundene Anwendung/Plattform",
+          "x-schemaorg": "softwareRequirements"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["title", "promptCore"],
+  "allOf": [
+    { "$ref": "#/$defs/profileBase" }
+  ],
+  "$defs": {
+    "contributor": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "x-schemaorg": "name" },
+        "role": { "type": "string", "x-schemaorg": "roleName" },
+        "type": { "type": "string", "enum": ["Person", "Organization"], "x-schemaorg": "@type" }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    },
+    "alignmentObject": {
+      "type": "object",
+      "description": "Kompetenz- oder Lehrplanbezug",
+      "properties": {
+        "targetName": { "type": "string", "x-schemaorg": "targetName" },
+        "targetUrl": { "type": "string", "format": "uri", "x-schemaorg": "targetUrl" },
+        "targetDescription": { "type": "string", "x-schemaorg": "targetDescription" },
+        "alignmentType": { "type": "string", "x-schemaorg": "alignmentType" }
+      },
+      "required": ["targetName"],
+      "additionalProperties": false
+    },
+    "mediaObject": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "format": "uri", "x-schemaorg": "url" },
+        "contentUrl": { "type": "string", "format": "uri", "x-schemaorg": "contentUrl" },
+        "encodingFormat": { "type": "string", "x-schemaorg": "encodingFormat" },
+        "name": { "type": "string", "x-schemaorg": "name" },
+        "description": { "type": "string", "x-schemaorg": "description" }
+      },
+      "additionalProperties": false
+    },
+    "profileBase": {
+      "type": "object",
+      "properties": {
+        "dateCreated": { "type": "string", "format": "date-time", "x-schemaorg": "dateCreated" },
+        "dateModified": { "type": "string", "format": "date-time", "x-schemaorg": "dateModified" },
+        "datePublished": { "type": "string", "format": "date-time", "x-schemaorg": "datePublished" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

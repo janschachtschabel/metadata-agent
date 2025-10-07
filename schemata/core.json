@@ -273,7 +273,7 @@
         "multiple": false,
         "required": false,
         "ask_user": true,
-        "ai_fillable": false,
+        "ai_fillable": true,
         "index": { "keyword": true },
         "vocabulary": {
           "type": "closed",
@@ -282,12 +282,12 @@
             { "label": "Organisation", "schema_file": "organization.json" },
             { "label": "Veranstaltung", "schema_file": "event.json" },
             { "label": "Lernmaterial", "schema_file": "learning_material.json" },
-            { "label": "Bildungsgänge und -angebote", "schema_file": "education_offer.json" },
+            { "label": "Bildungsgänge und Bildungsangebote", "schema_file": "education_offer.json" },
             { "label": "Berufsbilder", "schema_file": "occupation.json" },
             { "label": "Prompts", "schema_file": "prompt.json" },
             { "label": "Tools Infrastrukturen & Services", "schema_file": "tool_service.json" },
             { "label": "Quelle", "schema_file": "source.json" },
-            { "label": "Didaktische Planungsinstrumente", "schema_file": "teaching_instrument.json" }
+            { "label": "Didaktische Planungsinstrumente (Unterrichtsmethoden und -entwürfe)", "schema_file": "didactic_planning_tools.json" }
           ]
         },
         "normalization": { "trim": true, "case": "title", "deduplicate": true }

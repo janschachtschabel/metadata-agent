@@ -2,6 +2,32 @@
 
 Ein intelligenter Agent zur automatischen Extraktion von Metadaten aus Textbeschreibungen, basierend auf konfigurierbaren JSON-Schemata.
 
+## 📑 Inhaltsverzeichnis
+
+- [🎯 Funktionen](#-funktionen)
+- [🏗️ Architektur](#️-architektur)
+- [📋 Voraussetzungen](#-voraussetzungen)
+- [🚀 Installation](#-installation)
+- [🎮 Workflow-Optionen](#-workflow-optionen)
+  - [Option 1: Automatisch (ohne Mensch)](#option-1-automatisch-ohne-mensch)
+  - [Option 2: Minimal-UI (mit Feedback)](#option-2-minimal-ui-mit-feedback)
+  - [Option 3: Komplexer Chatbot](#option-3-komplexer-chatbot)
+- [🎮 Detaillierte Nutzung](#-detaillierte-nutzung)
+  - [Mit Chatbot (Gradio UI)](#starten-der-anwendung)
+  - [Workflow-Beschreibung](#workflow)
+  - [Beispiel-Konversation](#beispiel-konversation)
+- [🔧 Code-Beispiele & Details](#-code-beispiele--details)
+- [✅ Schema-Validierung](#-schema-validierung)
+- [📁 Projektstruktur & Dateien](#-projektstruktur--dateien)
+  - [Basis-Schema & Inhaltstypen](#️-schemata-erforderlich)
+  - [11 JSON-Schemata](#basis-schema)
+- [🔧 Konfiguration](#-konfiguration)
+- [📊 Datenfluss](#-datenfluss)
+- [✨ Neue Features](#-neue-features)
+- [🧩 Module](#-module)
+- [🐛 Troubleshooting](#-troubleshooting)
+- [🔮 Erweiterungsmöglichkeiten](#-erweiterungsmöglichkeiten)
+
 ## 🎯 Funktionen
 
 - **KI-gestützte Extraktion**: Verwendet OpenAI GPT-5-mini zur intelligenten Metadatenextraktion
@@ -67,22 +93,147 @@ Ein intelligenter Agent zur automatischen Extraktion von Metadaten aus Textbesch
 4. **Umgebungsvariablen konfigurieren**:
    - Kopiere `.env.example` zu `.env`:
      ```bash
+     # Windows
      copy .env.example .env
+     
+     # Linux/Mac
+     cp .env.example .env
      ```
-   - Füge deinen OpenAI API Key in `.env` ein:
+   - **Minimal:** Nur API Key eintragen (Rest ist optional):
+     ```env
+     OPENAI_API_KEY=sk-proj-xxxxx
      ```
-     OPENAI_API_KEY=sk-...
+   - **Mit GPT-5 (Standard):**
+     ```env
+     OPENAI_API_KEY=sk-proj-xxxxx
+     OPENAI_MODEL=gpt-5-mini
+     GPT5_REASONING_EFFORT=minimal  # Nur für GPT-5
+     GPT5_VERBOSITY=low             # Nur für GPT-5
      ```
+   - **Mit GPT-4o (Alternative):**
+     ```env
+     OPENAI_API_KEY=sk-proj-xxxxx
+     OPENAI_MODEL=gpt-4o
+     # GPT5_* Parameter werden automatisch ignoriert
+     ```
+   
+   📚 **Vollständige Dokumentation:** Siehe [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+   
+   **Unterstützte Modelle:**
+   - ✅ GPT-5 Familie: `gpt-5-mini`, `gpt-5-nano`, `gpt-5` (mit reasoning/verbosity)
+   - ✅ GPT-4 Familie: `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo` (Standard API)
+   - ✅ Andere: `gpt-3.5-turbo` oder kompatible Modelle
 
-## 🎮 Nutzung
+## 🎮 Workflow-Optionen
 
-### Starten der Anwendung
+Es stehen **3 verschiedene Workflows** zur Verfügung - je nach Anwendungsfall:
 
+---
+
+### **Option 1: Automatisch (ohne Mensch)** 🤖
+
+**Datei:** `auto_workflow_full.py` oder `auto_workflow_required_only.py`
+
+**Start:**
+```bash
+# Vollständig (Pflicht + Optional)
+python auto_workflow_full.py
+
+# Nur Pflichtfelder (schneller)
+python auto_workflow_required_only.py
+```
+
+**Eigenschaften:**
+- ⚡ Durchläuft alle Schritte automatisch
+- 📋 Keine Benutzerinteraktion erforderlich
+- 🎯 Wahlweise Vollversion oder Minimal-Version (nur Pflichtfelder)
+- ⏱️ **Dauer:** ~20 Sekunden (Full) / ~5-8 Sekunden (Required Only)
+- 💾 Speichert JSON automatisch
+
+**Anwendungsfall:** Batch-Verarbeitung, API-Integration, Automatisierung
+
+---
+
+### **Option 2: Minimal-UI (mit Feedback)** 📱
+
+**Datei:** `app_minimal.py`
+
+**Start:**
+```bash
+python app_minimal.py
+```
+**URL:** http://127.0.0.1:7860
+
+**Eigenschaften:**
+- 🎨 Kompakte UI für Seitenleisten (8 Zeilen Felder)
+- 📝 **Eingabe:** Textfeld + Dropdown für Inhaltsart (Automatisch/Manuell)
+- 📊 **Ausgabe:** JSON-Vorschau
+- ✏️ **Änderungen:** Revision-Button mit Eingabefeld
+- 🔄 Bei Änderungen: Kompletter Prozess wird erneut durchlaufen
+  - **Vorteil:** Erneute Prüfung auf Vokabulare und Validierung
+- ⏱️ **Dauer:** ~20 Sekunden pro Durchlauf
+- 💾 JSON-Download-Button
+
+**Anwendungsfall:** Schnelle Extraktion mit Korrekturmöglichkeit, Seitenleisten-Integration
+
+---
+
+### **Option 3: Komplexer Chatbot** 💬
+
+**Datei:** `app.py`
+
+**Start:**
 ```bash
 python app.py
 ```
+**URL:** http://127.0.0.1:7860
 
-Die Anwendung startet auf: `http://127.0.0.1:7860`
+**Eigenschaften:**
+- 🗣️ Geführte Abfrage in Schritten
+- 📋 **UI-Elemente:**
+  - Chatbereich für Dialog
+  - Texteingabefeld
+  - Auswahlfeld für Metadatenvorschau
+  - Optionale JSON-Anzeige
+- 📊 **Workflow-Schritte:**
+  1. Core Pflichtmetadaten
+  2. Core optionale Metadaten
+  3. Inhaltsart für Schemata (KI-Vorschlag oder manuell)
+  4. Spezial-Schemata Pflichtmetadaten
+  5. Spezial-Schemata optionale Metadaten
+- 💡 **Vorteile:**
+  - User wird nicht überlastet (immer nur Teildaten)
+  - Chatbot kann Rückfragen zum Vokabular beantworten
+  - Gibt Hinweise auf weitere mögliche Felder
+  - Korrekturen jederzeit möglich
+- ⏱️ **Dauer:** ~20 Sekunden für Volldurchlauf
+- 🖥️ Höherer Platzbedarf im UX
+
+**Anwendungsfall:** Interaktive Erfassung mit Beratung, komplexe Metadaten, explorative Nutzung
+
+---
+
+### **Vergleichstabelle**
+
+| Kriterium | Automatisch | Minimal-UI | Komplexer Chatbot |
+|-----------|-------------|------------|-------------------|
+| **Datei** | `auto_workflow_*.py` | `app_minimal.py` | `app.py` |
+| **Port** | - | 7860 | 7860 |
+| **Interaktion** | Keine | Minimal (Feedback) | Vollständig (Dialog) |
+| **UI-Größe** | - | Klein (Sidebar) | Groß (Fullscreen) |
+| **Schritte** | Alle automatisch | Auf einmal | Schrittweise |
+| **Änderungen** | Nicht möglich | Re-Extraktion | Während Workflow |
+| **Vokabular-Hilfe** | Automatisch | Automatisch | + Chat-Beratung |
+| **Dauer** | 5-20s | ~20s | ~20s |
+| **Best for** | Batch/API | Quick Edit | Komplexe Fälle |
+
+---
+
+## 🎮 Detaillierte Nutzung
+
+### Starten der Anwendung
+
+Siehe [Workflow-Optionen](#-workflow-optionen) für die verschiedenen Startmöglichkeiten
 
 ### Workflow
 
@@ -175,6 +326,244 @@ Agent: ✅ Event-Schema geladen. Extrahiere Event-spezifische Felder...
        ✅ Metadatenextraktion abgeschlossen!
 ```
 
+## 🔧 Code-Beispiele & Details
+
+> 💡 **Für einen Überblick siehe:** [Workflow-Optionen](#-workflow-optionen)
+
+---
+
+### 💻 Code-Beispiel
+
+Beide Scripts nutzen die gleiche Struktur:
+
+```python
+from dotenv import load_dotenv
+from agent import MetadataAgent
+from models import WorkflowState
+
+# Alle Einstellungen aus .env laden
+load_dotenv()
+
+# Text definieren
+TEXT = """Die Tagung Zukunft der Hochschullehre findet vom 15. bis 16. September 2026..."""
+
+# Agent initialisieren (lädt Config aus .env)
+agent = MetadataAgent()
+state = WorkflowState()
+state.add_message("user", TEXT)
+
+# Workflow-Phasen durchlaufen
+state = agent._init_node(state)                          # Phase 1: Init
+state = agent._extract_core_required_node(state)         # Phase 2: Core Required
+state.core_required_complete = True
+
+# auto_workflow_full.py:    → Extrahiert Optional-Felder
+# auto_workflow_required_only.py: → Überspringt Optional-Felder
+state = agent._extract_core_optional_node(state)         # Phase 3: Core Optional
+state.core_optional_complete = True
+
+state = agent._suggest_special_schemas_node(state)       # Phase 4: Schema Detection
+state.special_schema_confirmed = True
+
+state = agent._extract_special_required_node(state)      # Phase 5a: Special Required
+state.special_required_complete = True
+
+state = agent._extract_special_optional_node(state)      # Phase 5b: Special Optional
+state.special_optional_complete = True
+
+state = agent._review_node(state)                        # Phase 6: Review
+
+# Metadaten exportieren
+final_metadata = {k: v for k, v in state.metadata.items() if v}
+```
+
+---
+
+### 📊 Output-Beispiel (auto_workflow_full.py)
+
+```
+======================================================================
+🤖 AUTOMATISCHE METADATENEXTRAKTION (Vollständig)
+======================================================================
+
+📝 Eingabetext:
+----------------------------------------------------------------------
+Die Tagung Zukunft der Hochschullehre findet vom 15. bis 16. September...
+----------------------------------------------------------------------
+
+⚙️  Phase 1: Initialisierung...
+✅ Core-Schema geladen: 15 Felder
+
+📋 Phase 2: Core-Pflichtfelder extrahieren...
+   ✅ Titel: Zukunft der Hochschullehre
+   ✅ Beschreibung: Die Tagung Zukunft der Hochschullehre findet...
+   ✅ Keywords: Hochschullehre, digitale Prüfungen, KI
+
+📋 Phase 3: Core-Optionale Felder extrahieren...
+   ✅ 4 optionale Felder extrahiert
+      • Zielgruppe: Lehrende, Studiengangsverantwortliche
+      • Kosten: 120 € (ermäßigt 60 € für Studierende)
+      • Sprache: de
+
+🔍 Phase 4: Spezial-Schema erkennen...
+   ✅ Erkannt: Veranstaltung
+   📋 Schema: event.json
+
+📋 Phase 5: Spezial-Schema Felder extrahieren...
+   ✅ 3 Pflichtfelder:
+      • Startdatum: 2026-09-15
+      • Endedatum: 2026-09-16
+      • Ort: Universität Potsdam
+   ✅ 5 optionale Felder:
+      • Veranstaltungsformat: Konferenz
+      • Anmeldeschluss: 2026-08-20
+
+✅ Phase 6: Finalisierung...
+   📊 Gesamt: 23 Felder extrahiert
+
+======================================================================
+📄 FINALE METADATEN (JSON)
+======================================================================
+{
+  "cclom:title": "Zukunft der Hochschullehre",
+  "cclom:general_description": "Die Tagung...",
+  "cclom:general_keyword": ["Hochschullehre", "digitale Prüfungen"],
+  "schema:startDate": "2026-09-15",
+  "schema:endDate": "2026-09-16",
+  "schema:location": {
+    "@type": "Place",
+    "name": "Universität Potsdam"
+  }
+}
+
+💾 Metadaten gespeichert in: extracted_metadata.json
+```
+
+---
+
+## ✅ Schema-Validierung
+
+### Validierung aller Schemata
+
+Das Tool `validate_schemas.py` prüft **automatisch alle** JSON-Dateien im `schemata/` Ordner:
+
+```bash
+python validate_schemas.py
+```
+
+### Funktionsweise
+
+```python
+import glob
+import json
+
+# Findet automatisch alle .json Dateien
+schema_files = glob.glob("schemata/*.json")
+schemas = [os.path.basename(f) for f in schema_files 
+           if not f.endswith(('.old', '.bak', '.backup'))]
+schemas.sort()
+
+for schema_file in schemas:
+    try:
+        with open(f"schemata/{schema_file}", 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Validiere Struktur
+        profile_id = data.get("profileId")
+        fields = data.get("fields", [])
+        required_fields = [f for f in fields if f.get("system", {}).get("required")]
+        
+        print(f"✅ {schema_file}")
+        print(f"   profileId: {profile_id}")
+        print(f"   Felder: {len(fields)}")
+        print(f"   Pflichtfelder: {len(required_fields)}")
+    except json.JSONDecodeError as e:
+        print(f"❌ {schema_file}: Zeile {e.lineno}, {e.msg}")
+```
+
+### Output-Beispiel
+
+```
+===========================================================================
+🔍 DETAILLIERTE SCHEMA-VALIDIERUNG
+===========================================================================
+Gefundene Schema-Dateien: 11
+
+📄 core.json
+---------------------------------------------------------------------------
+   ✅ JSON-Syntax: Valide
+   📋 profileId: core:descriptive
+   📌 version: 1.7.0
+   🔢 Felder: 15
+   ⚠️  Pflichtfelder: 3
+
+📄 person.json
+---------------------------------------------------------------------------
+   ✅ JSON-Syntax: Valide
+   📋 profileId: core:person
+   📌 version: 1.0.0
+   🔢 Felder: 37
+   ⚠️  Pflichtfelder: 3
+
+📄 tool_service.json
+---------------------------------------------------------------------------
+   ✅ JSON-Syntax: Valide
+   📋 profileId: core:tool_service
+   📌 version: 1.0.0
+   🔢 Felder: 28
+   ⚠️  Pflichtfelder: 2
+
+===========================================================================
+📊 ZUSAMMENFASSUNG
+===========================================================================
+✅ Alle 11 Dateien sind valide!
+```
+
+### Validierungs-Features
+
+| Feature | Beschreibung |
+|---------|--------------|
+| **Automatische Erkennung** | Findet alle `.json` Dateien in `schemata/` |
+| **Syntax-Check** | Prüft JSON-Syntax und encoding |
+| **Struktur-Validierung** | Prüft `profileId`, `version`, `fields` |
+| **Pflichtfeld-Analyse** | Zählt required vs. optional Felder |
+| **Fehlerdetails** | Zeigt exakte Zeile/Spalte bei Syntax-Fehlern |
+| **Backup-Filterung** | Ignoriert `.old`, `.bak`, `.before_fix` Dateien |
+
+### Integration in Validator
+
+Der `validator.py` nutzt Pydantic für **Laufzeit-Validierung**:
+
+```python
+from validator import MetadataValidator
+
+validator = MetadataValidator()
+
+# Validiere Metadaten
+metadata = {
+    "cclom:title": "Mein Kurs",
+    "cclom:general_keyword": ["Python", "AI"],
+    "schema:startDate": "2026-09-15"
+}
+
+# Automatische Validierung
+validated = validator.validate_metadata(metadata, schema_info)
+
+# Fehler werden automatisch erkannt:
+# - Falsche Datentypen (string statt date)
+# - Fehlende Pflichtfelder
+# - Ungültige Werte (z.B. Email-Format)
+```
+
+### Validierungs-Ebenen
+
+| Ebene | Tool | Zeitpunkt | Zweck |
+|-------|------|-----------|-------|
+| **Schema-Syntax** | `validate_schemas.py` | Entwicklungszeit | JSON-Dateien prüfen |
+| **Struktur** | `schema_loader.py` | Ladezeit | Schema-Format validieren |
+| **Daten-Typ** | `validator.py` (Pydantic) | Laufzeit | Metadaten validieren |
+| **Business-Logik** | `agent.py` | Extraktion | Feldabhängigkeiten prüfen |
+
 ## 📁 Projektstruktur & Dateien
 
 ### 🔧 **Kern-Dateien** (erforderlich)
@@ -189,21 +578,37 @@ Agent: ✅ Event-Schema geladen. Extrahiere Event-spezifische Felder...
 
 ### 🗂️ **Schemata** (erforderlich)
 
-| Datei | Beschreibung | Wichtigkeit |
-|-------|--------------|-------------|
-| **`schemata/core.json`** | Core-Schema - Basis-Metadaten (Titel, Beschreibung, Keywords, Lizenz, etc.) | ⭐⭐⭐ |
-| **`schemata/event.json`** | Event-Schema - Veranstaltungsspezifische Felder (Datum, Ort, Typ) | ⭐⭐ |
-| **`schemata/organization.json`** | Organisation-Schema - Name, Adresse, Kontakt | ⭐⭐ |
-| **`schemata/person.json`** | Person-Schema - Name, Rolle, Affiliation | ⭐⭐ |
+#### **Basis-Schema**
+| Datei | Beschreibung | Felder | Wichtigkeit |
+|-------|--------------|--------|-------------|
+| **`schemata/core.json`** | Core-Schema - Basis-Metadaten für alle Inhaltstypen (Titel, Beschreibung, Keywords, Lizenz, Autor, Sprache, etc.) | 15 | ⭐⭐⭐ |
+
+#### **Inhaltstyp-Schemata**
+| Datei | Beschreibung | Felder | Wichtigkeit |
+|-------|--------------|--------|-------------|
+| **`schemata/person.json`** | Person-Schema - Personen, Experten, Lehrende (Name, Email, Rolle, Affiliation, Expertise, Publikationen) | 37 | ⭐⭐ |
+| **`schemata/source.json`** | Quelle/Kanal-Schema - Repositories, Portale, Datenbanken (Quellentyp, Harvesting, Vererbung, Governance) | 19 | ⭐⭐ |
+| **`schemata/tool_service.json`** | Tool/Service-Schema - Software, Plattformen, Apps (Funktion, Zielgruppe, Technologie, Kosten, Barrierefreiheit) | 28 | ⭐⭐ |
+| **`schemata/event.json`** | Event-Schema - Veranstaltungen, Konferenzen, Workshops (Datum, Ort, Typ, Veranstalter, Kosten) | 22 | ⭐⭐ |
+| **`schemata/organization.json`** | Organisation-Schema - Institutionen, Bildungseinrichtungen (Name, Adresse, Kontakt, Typ) | 34 | ⭐⭐ |
+| **`schemata/education_offer.json`** | Bildungsangebot-Schema - Kurse, Zertifikate, Studiengänge (Niveau, Dauer, Abschluss, Voraussetzungen) | 20 | ⭐⭐ |
+| **`schemata/didactic_planning_tools.json`** | Didaktik-Tools-Schema - Planungs- und Unterrichtswerkzeuge (Didaktischer Ansatz, Einsatzszenario) | 24 | ⭐⭐ |
+| **`schemata/prompt.json`** | Prompt-Schema - KI-Prompts für Bildungskontexte (Prompt-Text, Funktion, Szenario, Modelle) | JSON Schema | ⭐⭐ |
+
+#### **Vokabulare (SKOS)**
+| Datei | Beschreibung | Typ | Wichtigkeit |
+|-------|--------------|-----|-------------|
+| **`schemata/occupation.json`** | Berufe-Vokabular - Hierarchisches Vokabular mit ISCO/ESCO-Mappings (8 Top-Konzepte: Bildung, Gesundheit, Handwerk, IT, etc.) | SKOS ConceptScheme | ⭐⭐ |
+| **`schemata/learning_materials.json`** | Lernmaterial-Vokabular - Taxonomie für Lernressourcen | SKOS ConceptScheme | ⭐⭐ |
 
 ### 🛠️ **Hilfsdateien** (optional)
 
-| Datei | Beschreibung | Löschen? |
-|-------|--------------|----------|
-| **`validator.py`** | Metadaten-Validierung & Normalisierung - Wird nur von example.py verwendet | ✅ Optional |
-| **`example.py`** | CLI-Beispiel ohne UI - Nützlich zum Testen ohne Gradio | ✅ Optional |
-| **`test_setup.py`** | Setup-Test-Script - Prüft Installation und Dependencies | ✅ Optional |
-| **`start.bat`** | Windows Batch-Script - Startet App automatisch | ✅ Optional |
+| Datei | Beschreibung | Wichtigkeit |
+|-------|--------------|-------------|
+| **`validator.py`** | Metadaten-Validierung & Normalisierung - Pydantic-basierte Validierung mit Typenprüfung | ⭐⭐ |
+| **`test_validator.py`** | Validator-Tests - Unit-Tests für Validierungslogik | ⭐ |
+| **`validate_schemas.py`** | Schema-Validierung - Prüft alle JSON-Schemata auf Syntax-Fehler | ⭐⭐ |
+| **`example_workflow_withoutchatbot.py`** | CLI-Beispiel - Automatische Extraktion ohne Chat-UI (siehe unten) | ⭐⭐ |
 
 ### 🗑️ **Überflüssige Dateien** (können gelöscht werden)
 
@@ -443,26 +848,61 @@ Agent: ⬅️ Zurück zu: **Core-Pflichtfelder**
 
 ## 🧹 Projekt bereinigen
 
-Um das Projekt aufzuräumen, können folgende Dateien **sicher gelöscht** werden:
+**Minimale Kern-Installation** - Diese Dateien werden benötigt:
 
-```powershell
-# Definitiv löschen (einmalige Scripts & Backups):
-rm agent.py.backup        # Alte Backup-Datei
-rm fix_review.py          # Einmaliges Patch-Script  
-rm update_workflow.py     # Einmaliges Update-Script
-
-# Optional löschen (wenn nicht benötigt):
-rm validator.py           # Nur für example.py verwendet
-rm example.py             # CLI-Beispiel (optional für Tests)
-rm test_setup.py          # Setup-Validierung (optional)
-rm start.bat              # Windows-Startscript (Convenience)
+### **Essenzielle Dateien** ⭐⭐⭐
+```
+app.py                              # Gradio UI (Chatbot-Modus)
+agent.py                            # Workflow-Agent
+models.py                           # Datenmodelle
+schema_loader.py                    # Schema-Loader
+requirements.txt                    # Dependencies
+.env                                # API-Key (selbst erstellen)
+.env.example                        # Template
+README.md                           # Dokumentation
+.gitignore                          # Git-Konfiguration
 ```
 
-**Minimale Kern-Installation** (nur erforderliche Dateien):
-- `app.py`, `agent.py`, `models.py`, `schema_loader.py`
-- `requirements.txt`, `.env` (erstellt), `.env.example`
-- `schemata/*.json` (Core + Spezial-Schemas)
-- `README.md`, `.gitignore`
+### **Schemata** ⭐⭐⭐
+```
+schemata/core.json                  # Pflicht: Basis-Schema
+schemata/person.json                # Optional: Person-Schema
+schemata/source.json                # Optional: Quelle-Schema
+schemata/tool_service.json          # Optional: Tool-Schema
+schemata/event.json                 # Optional: Event-Schema
+schemata/organization.json          # Optional: Organisation-Schema
+schemata/education_offer.json       # Optional: Bildungsangebot-Schema
+schemata/didactic_planning_tools.json  # Optional: Didaktik-Tools-Schema
+schemata/prompt.json                # Optional: Prompt-Schema
+schemata/occupation.json            # Optional: Berufe-Vokabular
+schemata/learning_materials.json    # Optional: Lernmaterial-Vokabular
+```
+
+### **Nützliche Hilfsdateien** ⭐⭐
+```
+validator.py                        # Validierung (empfohlen)
+validate_schemas.py                 # Schema-Validierung (empfohlen)
+example_workflow_withoutchatbot.py  # Batch-Verarbeitung (empfohlen)
+test_validator.py                   # Tests (optional)
+extracted_metadata.json             # Beispiel-Output (optional)
+```
+
+### **Dokumentation** ⭐
+```
+docs/CHANGELOG.md                   # Versionshistorie
+docs/INSTALLATION.md                # Detaillierte Installation
+docs/QUICKSTART.md                  # Schnellstart
+docs/PROJECT_SUMMARY.md             # Technische Übersicht
+docs/VALIDATION.md                  # Validierungs-Dokumentation
+```
+
+### **Löschbare Dateien** ❌
+
+Alle temporären Check- und Fix-Scripts wurden bereits bereinigt:
+- ✅ `check_*.py` - Gelöscht
+- ✅ `fix_*.py` - Gelöscht
+- ✅ `validate_person_new.py` - Gelöscht
+- ✅ `cleanup_*.py` - Gelöscht
 
 ## 🔮 Erweiterungsmöglichkeiten
 
@@ -533,18 +973,45 @@ text={"verbosity": "low"}  # Kurze, präzise Antworten
 
 ## 📌 Version & Updates
 
-**Aktuelle Version**: 2.0 (2025-10-06)
+**Aktuelle Version**: 2.1 (2025-10-07)
 
-**Neueste Änderungen**:
+**Neueste Änderungen (v2.1)**:
+- ✅ **11 vollständige JSON-Schemata** - Alle Inhaltstypen validiert und produktionsreif
+- ✅ **Automatische Schema-Validierung** - `validate_schemas.py` prüft alle Schemata
+- ✅ **Workflow ohne Chatbot** - `example_workflow_withoutchatbot.py` für Batch-Verarbeitung
+- ✅ **Mehrstufige Validierung** - Schema-Syntax, Struktur, Daten-Typ, Business-Logik
+- ✅ **SKOS-Vokabulare** - `occupation.json` und `learning_materials.json` integriert
+- ✅ **Prompt-Schema** - Spezial-Schema für KI-Prompts in Bildungskontexten
+
+**Änderungen (v2.0)**:
 - ✅ Mehrere Spezial-Schemas nacheinander verarbeiten
 - ✅ Interaktive Korrekturen ohne Auto-Weiterleitung
 - ✅ Zurück-Navigation zu allen vorherigen Phasen
 - ✅ Nummerierte Schema-Auswahl (1,2,3 oder Namen)
 - ✅ Flexible Mehrfachauswahl bei Inhaltstypen
 - ✅ Phase-History für besseres Tracking
-- ✅ Gradio Messages-Format (kein Deprecation Warning)
 
 Siehe `docs/CHANGELOG.md` für vollständige Versionshistorie.
+
+---
+
+## 📊 Übersicht: Verfügbare Inhaltstypen
+
+Der Agent unterstützt **11 JSON-Schemata** für verschiedene Bildungsinhalte:
+
+| Schema | Anwendungsfall | Felder | Status |
+|--------|----------------|--------|--------|
+| 🏛️ **core** | Basis-Metadaten für alle Inhalte | 15 | ✅ Pflicht |
+| 👤 **person** | Personen, Experten, Lehrende | 37 | ✅ Valide |
+| 📦 **source** | Repositories, Portale, Kanäle | 19 | ✅ Valide |
+| 🛠️ **tool_service** | Software, Plattformen, Apps | 28 | ✅ Valide |
+| 📅 **event** | Konferenzen, Workshops, Tagungen | 22 | ✅ Valide |
+| 🏢 **organization** | Institutionen, Bildungseinrichtungen | 34 | ✅ Valide |
+| 🎓 **education_offer** | Kurse, Zertifikate, Studiengänge | 20 | ✅ Valide |
+| 📐 **didactic_planning_tools** | Unterrichts- und Planungswerkzeuge | 24 | ✅ Valide |
+| 💬 **prompt** | KI-Prompts für Bildungskontexte | JSON Schema | ✅ Valide |
+| 💼 **occupation** | Berufe-Taxonomie (SKOS) | 8 Top-Konzepte | ✅ Valide |
+| 📚 **learning_materials** | Lernressourcen-Taxonomie (SKOS) | SKOS | ✅ Valide |
 
 ---
 

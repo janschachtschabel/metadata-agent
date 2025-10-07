@@ -1,0 +1,510 @@
+{
+  "profileId": "core:source",
+  "version": "1.0.0",
+  "@context": {
+    "schema": "https://schema.org/",
+    "sdo": "https://schema.org/",
+    "ccm": "https://example.org/ccm/",
+    "harv": "https://example.org/harvesting/",
+    "inherit": "https://example.org/inheritance/"
+  },
+  "groups": [
+    { "id": "typing", "label": "Typisierung" },
+    { "id": "linkage", "label": "Quellen-Verknüpfungen" },
+    { "id": "harvesting", "label": "Erschließung (Crawl/Import)" },
+    { "id": "inheritance", "label": "Vererbung (Top-Down/Bottom-Up)" },
+    { "id": "governance", "label": "Verantwortung & Verwaltung" }
+  ],
+  "fields": [
+    {
+      "id": "ccm:source_kind",
+      "group": "typing",
+      "group_label": "Typisierung",
+      "prompt": {
+        "label": "Quellentyp (Untertyp)",
+        "description": "Spezifischer Untertyp der Quelle."
+      },
+      "system": {
+        "path": "ccm:source_kind",
+        "uri": "sdo:additionalType",
+        "datatype": "array",
+        "multiple": true,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "Kollektion/Kanal", "schema_types": ["sdo:CreativeWork", "sdo:Collection"] },
+            { "label": "Wörterbuch", "schema_types": ["sdo:CreativeWork"] },
+            { "label": "Portal", "schema_types": ["sdo:WebSite"] },
+            { "label": "Stream/RSS", "schema_types": ["sdo:DataFeed"] },
+            { "label": "Lexikon/Enzyklopädie", "schema_types": ["sdo:CreativeWork"] },
+            { "label": "Datenbank", "schema_types": ["sdo:DataCatalog", "sdo:Dataset"] },
+            { "label": "Repository", "schema_types": ["sdo:WebSite", "sdo:Service"] },
+            { "label": "Suchmaschine", "schema_types": ["sdo:WebSite", "sdo:Service"] },
+            { "label": "Referatory", "schema_types": ["sdo:WebSite", "sdo:Service"] }
+          ]
+        },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "ccm:schema_types_declared",
+      "group": "typing",
+      "group_label": "Typisierung",
+      "prompt": {
+        "label": "Schema.org-Typen",
+        "description": "Explizite schema.org-Typen der Quelle."
+      },
+      "system": {
+        "path": "ccm:schema_types_declared",
+        "uri": "@type",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "CreativeWork" },
+            { "label": "DataFeed" },
+            { "label": "DataCatalog" },
+            { "label": "Dataset" },
+            { "label": "WebSite" },
+            { "label": "Service" },
+            { "label": "ScholarlyArticle" }
+          ]
+        },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "schema:sourceOrganization",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Ursprungsorganisation",
+        "description": "Institution, die die Inhalte ursprünglich erstellt/herausgegeben hat."
+      },
+      "system": {
+        "path": "schema:sourceOrganization",
+        "uri": "sdo:sourceOrganization",
+        "datatype": "object",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "shape": {
+          "@type": ["Organization", "EducationalOrganization"],
+          "url": { "type": "uri" }
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:isBasedOn",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Basiert auf (Objekt)",
+        "description": "Verweis auf Original/Fork/Remix als CreativeWork."
+      },
+      "system": {
+        "path": "schema:isBasedOn",
+        "uri": "sdo:isBasedOn",
+        "datatype": "object",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "shape": {
+          "@type": ["CreativeWork", "LearningResource", "WebPage"],
+          "url": { "type": "uri" }
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:isBasedOnUrl",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Basiert auf (URL)",
+        "description": "URL der Originalquelle/Fundstelle."
+      },
+      "system": {
+        "path": "schema:isBasedOnUrl",
+        "uri": "sdo:isBasedOnUrl",
+        "datatype": "uri",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:provider",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Bereitstellende Plattform (Provider)",
+        "description": "Plattform/Repository/LMS, das Inhalte bereitstellt."
+      },
+      "system": {
+        "path": "schema:provider",
+        "uri": "sdo:provider",
+        "datatype": "object",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "shape": {
+          "@type": ["Organization", "Service"],
+          "url": { "type": "uri" }
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:publisher",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Publisher dieser Fassung",
+        "description": "Wer veröffentlicht die konkrete Fassung?"
+      },
+      "system": {
+        "path": "schema:publisher",
+        "uri": "sdo:publisher",
+        "datatype": "object",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "shape": {
+          "@type": ["Organization", "Person"],
+          "url": { "type": "uri" }
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:citation",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Zitierung/Literatur",
+        "description": "Formale Quellenangabe(n) oder verlinkte Werke."
+      },
+      "system": {
+        "path": "schema:citation",
+        "uri": "sdo:citation",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "allowed_item_types": ["string", "object"],
+        "shape": {
+          "@type": ["CreativeWork", "WebPage"],
+          "url": { "type": "uri" }
+        },
+        "index": { "fulltext": true, "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "schema:mainEntityOfPage",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Kanonische Detailseite",
+        "description": "URL der kanonischen Detailseite des Werks."
+      },
+      "system": {
+        "path": "schema:mainEntityOfPage",
+        "uri": "sdo:mainEntityOfPage",
+        "datatype": "uri",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "schema:sameAs",
+      "group": "linkage",
+      "group_label": "Quellen-Verknüpfungen",
+      "prompt": {
+        "label": "Stabile Identifikatoren",
+        "description": "Stabile Referenzen (DOI, Handle, Wikidata, GitHub, …)."
+      },
+      "system": {
+        "path": "schema:sameAs",
+        "uri": "sdo:sameAs",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "harv:mode",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Erschließungsform",
+        "description": "Welcher Spider/Crawler oder manuell erschlossen?"
+      },
+      "system": {
+        "path": "harv:mode",
+        "uri": "harv:mode",
+        "datatype": "string",
+        "multiple": false,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "crawler:generic" },
+            { "label": "crawler:rss" },
+            { "label": "crawler:api" },
+            { "label": "manual" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "lowercase": true }
+      }
+    },
+    {
+      "id": "harv:status",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Erschließungsstatus",
+        "description": "Aktueller Status der Erschließung."
+      },
+      "system": {
+        "path": "harv:status",
+        "uri": "harv:status",
+        "datatype": "string",
+        "multiple": false,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "planned" },
+            { "label": "running" },
+            { "label": "succeeded" },
+            { "label": "failed" },
+            { "label": "paused" }
+          ]
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "harv:last_run",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Letzter Lauf",
+        "description": "Zeitpunkt des letzten Crawl/Imports (ISO-8601)."
+      },
+      "system": {
+        "path": "harv:last_run",
+        "uri": "harv:last_run",
+        "datatype": "datetime",
+        "multiple": false,
+        "required": false,
+        "ask_user": false,
+        "ai_fillable": true,
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "harv:next_run",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Nächster Lauf",
+        "description": "Geplanter nächster Crawl/Import (ISO-8601)."
+      },
+      "system": {
+        "path": "harv:next_run",
+        "uri": "harv:next_run",
+        "datatype": "datetime",
+        "multiple": false,
+        "required": false,
+        "ask_user": false,
+        "ai_fillable": true,
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "harv:scope",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Erschließungsumfang",
+        "description": "Alle Inhalte oder ausgewählte Teilmengen?"
+      },
+      "system": {
+        "path": "harv:scope",
+        "uri": "harv:scope",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "all" },
+            { "label": "subset" }
+          ]
+        },
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "harv:storage_context",
+      "group": "harvesting",
+      "group_label": "Erschließung (Crawl/Import)",
+      "prompt": {
+        "label": "Speicherort",
+        "description": "Ablageort der erschlossenen Daten (Kontext/Ordner)."
+      },
+      "system": {
+        "path": "harv:storage_context",
+        "uri": "harv:storage_context",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "inherit:topdown_fields",
+      "group": "inheritance",
+      "group_label": "Vererbung (Top-Down/Bottom-Up)",
+      "prompt": {
+        "label": "Top-Down-Vererbung",
+        "description": "Welche Felder sollen standardmäßig an Inhalte vererbt werden?"
+      },
+      "system": {
+        "path": "inherit:topdown_fields",
+        "uri": "inherit:topdown_fields",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "open",
+          "concepts": [
+            { "label": "discipline" },
+            { "label": "keywords" },
+            { "label": "license" },
+            { "label": "ads" },
+            { "label": "cost" },
+            { "label": "login_required" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "inherit:bottomup_facets",
+      "group": "inheritance",
+      "group_label": "Vererbung (Top-Down/Bottom-Up)",
+      "prompt": {
+        "label": "Bottom-Up-Aggregation",
+        "description": "Welche Facetten werden aus Inhalten an der Quelle aggregiert angezeigt?"
+      },
+      "system": {
+        "path": "inherit:bottomup_facets",
+        "uri": "inherit:bottomup_facets",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "open",
+          "concepts": [
+            { "label": "discipline" },
+            { "label": "keywords" },
+            { "label": "license" },
+            { "label": "educationalLevel" },
+            { "label": "audience" },
+            { "label": "cost" },
+            { "label": "login_required" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "ccm:editorial_owner",
+      "group": "governance",
+      "group_label": "Verantwortung & Verwaltung",
+      "prompt": {
+        "label": "Verantwortliche Redaktion",
+        "description": "Intern verantwortliche Redaktion/Gruppe."
+      },
+      "system": {
+        "path": "ccm:editorial_owner",
+        "uri": "ccm:editorial_owner",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    }
+  ],
+  "output_template": {
+    "ccm:source_kind": [],
+    "ccm:schema_types_declared": [],
+    "schema:sourceOrganization": {},
+    "schema:isBasedOn": [],
+    "schema:isBasedOnUrl": [],
+    "schema:provider": {},
+    "schema:publisher": {},
+    "schema:citation": [],
+    "schema:mainEntityOfPage": "",
+    "schema:sameAs": [],
+    "harv:mode": "",
+    "harv:status": "",
+    "harv:last_run": "",
+    "harv:next_run": "",
+    "harv:scope": "",
+    "harv:storage_context": "",
+    "inherit:topdown_fields": [],
+    "inherit:bottomup_facets": [],
+    "ccm:editorial_owner": ""
+  }
+}

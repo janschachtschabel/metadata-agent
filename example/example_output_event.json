@@ -1,0 +1,92 @@
+{
+  "cclom:title": "Tagung Zukunft der Hochschullehre 2026 – Universität Potsdam",
+  "cclom:general_description": "Konferenz am 15.–16. September 2026 an der Universität Potsdam zu innovativen Lehrformaten, digitalen Prüfungen und KI-gestützten Lernumgebungen mit Fachvorträgen, praxisorientierten Workshops und Poster-Session. Zielgruppe: Lehrende, Studiengangsverantwortliche und Hochschuldidaktiker:innen. Veranstalter: Zentrum für Qualitätsentwicklung in Lehre und Studium (ZfQ). Teilnahmegebühr: 120 € (ermäßigt 60 €). Anmeldung bis 20. August; ausgewählte Programmpunkte werden live gestreamt.",
+  "cclom:general_keyword": [
+    "Hochschullehre",
+    "innovative Lehrformate",
+    "digitale Prüfungen",
+    "KI-gestützte Lernumgebungen",
+    "Lehrende",
+    "Hochschuldidaktik",
+    "Workshops",
+    "Poster-Session",
+    "ZfQ",
+    "Universität Potsdam",
+    "Konferenz 2026",
+    "Live-Streaming"
+  ],
+  "ccm:author_freetext": [
+    "Zentrum für Qualitätsentwicklung in Lehre und Studium (ZfQ)"
+  ],
+  "ccm:oeh_publisher_combined": "Zentrum für Qualitätsentwicklung in Lehre und Studium (ZfQ)",
+  "cclom:general_language": "de",
+  "ccm:oeh_flex_lrt": [
+    "Veranstaltung"
+  ],
+  "ccm:educationalintendedenduserrole": [
+    "Lehrer/in",
+    "Autor/in",
+    "Berater/in"
+  ],
+  "ccm:educationalcontext": [
+    "Hochschule",
+    "Fortbildung"
+  ],
+  "ccm:taxonid": [
+    "Hochschuldidaktik",
+    "Bildungsforschung",
+    "Digitale Lehre"
+  ],
+  "oeh:eventType": [
+    "Konferenz",
+    "Tagung",
+    "Vortrag",
+    "Workshop",
+    "Poster-Session",
+    "Livestream"
+  ],
+  "schema:startDate": "2026-09-15",
+  "schema:endDate": "2026-09-16",
+  "schema:eventStatus": "EventScheduled",
+  "schema:duration": "P2D",
+  "schema:eventAttendanceMode": "MixedEventAttendanceMode",
+  "schema:location": {
+    "name": "Universität Potsdam",
+    "address": "Universität Potsdam, Potsdam, Deutschland"
+  },
+  "schema:organizer": [
+    "Zentrum für Qualitätsentwicklung in Lehre und Studium (ZfQ)"
+  ],
+  "schema:performer": [
+    "Expert:innen aus Deutschland und Österreich"
+  ],
+  "schema:attendee": [
+    "Lehrende",
+    "Studiengangsverantwortliche",
+    "Hochschuldidaktiker:innen",
+    "Studierende"
+  ],
+  "schema:offers": [
+    {
+      "price": 120,
+      "priceCurrency": "EUR",
+      "description": "Reguläre Teilnahme"
+    },
+    {
+      "price": 60,
+      "priceCurrency": "EUR",
+      "description": "Ermäßigt für Studierende"
+    }
+  ],
+  "schema:teaches": [
+    "innovative Lehrformate",
+    "digitale Prüfungen",
+    "KI-gestützte Lernumgebungen"
+  ],
+  "schema:about": [
+    "innovative Lehrformate",
+    "digitale Prüfungen",
+    "KI-gestützte Lernumgebungen",
+    "Hochschullehre"
+  ]
+}

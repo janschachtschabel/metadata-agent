@@ -1,0 +1,656 @@
+{
+  "profileId": "core:tool_service",
+  "version": "1.0.0",
+  "@context": {
+    "schema": "https://schema.org/",
+    "sdo": "https://schema.org/",
+    "ccm": "https://example.org/ccm/",
+    "preview": "https://example.org/preview/"
+  },
+  "groups": [
+    { "id": "classification", "label": "Klassifikation" },
+    { "id": "technical", "label": "Technik & Plattform" },
+    { "id": "provider", "label": "Anbieter & Darstellung" },
+    { "id": "pricing", "label": "Kosten & Angebote" },
+    { "id": "compliance", "label": "Compliance & Schutz" },
+    { "id": "audience", "label": "Zielgruppe" },
+    { "id": "usage", "label": "Nutzung & Einsatz" },
+    { "id": "linkage", "label": "Verknüpfungen" }
+  ],
+  "fields": [
+    {
+      "id": "ccm:tool_schema_types",
+      "group": "classification",
+      "group_label": "Klassifikation",
+      "prompt": {
+        "label": "Schema.org-Typ(en)",
+        "description": "Passende Typen (Mehrfachauswahl) wie SoftwareApplication, WebApplication, Service …"
+      },
+      "system": {
+        "path": "ccm:tool_schema_types",
+        "uri": "@type",
+        "datatype": "array",
+        "multiple": true,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "SoftwareApplication" },
+            { "label": "WebApplication" },
+            { "label": "MobileApplication" },
+            { "label": "Service" },
+            { "label": "WebAPI" },
+            { "label": "APIReference" },
+            { "label": "Product" },
+            { "label": "DataFeed" }
+          ]
+        },
+        "normalization": { "trim": true, "case": "title", "deduplicate": true }
+      }
+    },
+    {
+      "id": "ccm:application_category",
+      "group": "classification",
+      "group_label": "Klassifikation",
+      "prompt": {
+        "label": "Anwendungskategorie",
+        "description": "Funktionale Kategorie (Wissensmanagement, Kollaboration, Datenspeicherung …)"
+      },
+      "system": {
+        "path": "ccm:application_category",
+        "uri": "sdo:applicationCategory",
+        "datatype": "array",
+        "multiple": true,
+        "required": true,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "vocabulary": {
+          "type": "open",
+          "concepts": [
+            { "label": "Wissensmanagement" },
+            { "label": "Zusammenarbeit & Kommunikation" },
+            { "label": "Datenspeicherung & -verwaltung" },
+            { "label": "Lernmanagement (LMS)" },
+            { "label": "Autorenwerkzeuge" },
+            { "label": "Virtuelles Klassenzimmer" },
+            { "label": "E-Portfolio" },
+            { "label": "Plagiatsprüfung" },
+            { "label": "Bibliotheksverwaltung" },
+            { "label": "KI-Tools/Sprachmodelle" }
+          ]
+        },
+        "normalization": { "trim": true, "deduplicate": true, "case": "title" }
+      }
+    },
+    {
+      "id": "ccm:platform",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Plattform",
+        "description": "Zielplattform(en): Web, Desktop, Mobil, Embedded, VR/AR, Cross-Plattform."
+      },
+      "system": {
+        "path": "ccm:platform",
+        "uri": "ccm:platform",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "Webbrowser" },
+            { "label": "Desktop" },
+            { "label": "Mobil" },
+            { "label": "Embedded" },
+            { "label": "VR/AR" },
+            { "label": "Cross-Plattform" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "sdo:operatingSystem",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Betriebssystem(e)",
+        "description": "Nur relevant, wenn keine reine Cloud-Software."
+      },
+      "system": {
+        "path": "sdo:operatingSystem",
+        "uri": "sdo:operatingSystem",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true, "uppercase_os": false }
+      }
+    },
+    {
+      "id": "ccm:deployment_model",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Bereitstellungsmodell",
+        "description": "SaaS/Cloud, On-Premises, Selbst-Hosting."
+      },
+      "system": {
+        "path": "ccm:deployment_model",
+        "uri": "ccm:deployment_model",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "closed",
+          "concepts": [
+            { "label": "SaaS/Cloud" },
+            { "label": "On-Premises" },
+            { "label": "Selbst-Hosting" },
+            { "label": "Hybrid" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:softwareVersion",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Version",
+        "description": "Versionsnummer (z. B. 3.2.1)."
+      },
+      "system": {
+        "path": "sdo:softwareVersion",
+        "uri": "sdo:softwareVersion",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^[0-9]+(\\.[0-9A-Za-z-]+)*$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:datePublished",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Veröffentlichungs-/Release-Datum",
+        "description": "Datum der aktuellen Version oder Erstveröffentlichung."
+      },
+      "system": {
+        "path": "sdo:datePublished",
+        "uri": "sdo:datePublished",
+        "datatype": "date",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "sdo:softwareRequirements",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Software-/Systemanforderungen",
+        "description": "Kompatibilitäten, Abhängigkeiten, Mindestanforderungen."
+      },
+      "system": {
+        "path": "sdo:softwareRequirements",
+        "uri": "sdo:softwareRequirements",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "fulltext": true, "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "sdo:permissions",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Berechtigungen",
+        "description": "Erforderliche App-/Systemberechtigungen."
+      },
+      "system": {
+        "path": "sdo:permissions",
+        "uri": "sdo:permissions",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "sdo:downloadUrl",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Download-URL",
+        "description": "Direkter Link zu Installationspaketen/Stores."
+      },
+      "system": {
+        "path": "sdo:downloadUrl",
+        "uri": "sdo:downloadUrl",
+        "datatype": "uri",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:installUrl",
+      "group": "technical",
+      "group_label": "Technik & Plattform",
+      "prompt": {
+        "label": "Installations-/Einrichtungs-URL",
+        "description": "Setup-/Onboarding-Link."
+      },
+      "system": {
+        "path": "sdo:installUrl",
+        "uri": "sdo:installUrl",
+        "datatype": "uri",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+
+    {
+      "id": "sdo:provider",
+      "group": "provider",
+      "group_label": "Anbieter & Darstellung",
+      "prompt": {
+        "label": "Anbieter",
+        "description": "Service-/Softwareanbieter (Organisation/Person)."
+      },
+      "system": {
+        "path": "sdo:provider",
+        "uri": "sdo:provider",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:brand",
+      "group": "provider",
+      "group_label": "Anbieter & Darstellung",
+      "prompt": {
+        "label": "Marke/Brand",
+        "description": "Zugehörige Marke/Produktlinie."
+      },
+      "system": {
+        "path": "sdo:brand",
+        "uri": "sdo:brand",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:logo",
+      "group": "provider",
+      "group_label": "Anbieter & Darstellung",
+      "prompt": {
+        "label": "Logo-URL",
+        "description": "Bild-/SVG-URL des Logos."
+      },
+      "system": {
+        "path": "sdo:logo",
+        "uri": "sdo:logo",
+        "datatype": "uri",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "validation": { "pattern": "^(https?://[^\\s]+\\.(jpg|jpeg|png|svg|webp))$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:areaServed",
+      "group": "provider",
+      "group_label": "Anbieter & Darstellung",
+      "prompt": {
+        "label": "Versorgungsgebiet",
+        "description": "Länder/Regionen, in denen Service/Produkt offiziell angeboten wird."
+      },
+      "system": {
+        "path": "sdo:areaServed",
+        "uri": "sdo:areaServed",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "sdo:hoursAvailable",
+      "group": "provider",
+      "group_label": "Anbieter & Darstellung",
+      "prompt": {
+        "label": "Servicezeiten",
+        "description": "Öffnungs-/Verfügbarkeitszeiten (OpeningHoursSpecification)."
+      },
+      "system": {
+        "path": "sdo:hoursAvailable",
+        "uri": "sdo:hoursAvailable",
+        "datatype": "json",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "index": { "keyword": false }
+      }
+    },
+
+    {
+      "id": "sdo:isAccessibleForFree",
+      "group": "pricing",
+      "group_label": "Kosten & Angebote",
+      "prompt": {
+        "label": "Kostenfrei zugänglich",
+        "description": "Ja/Nein (unabhängig von optionalen Premium-Angeboten)."
+      },
+      "system": {
+        "path": "sdo:isAccessibleForFree",
+        "uri": "sdo:isAccessibleForFree",
+        "datatype": "boolean",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "sdo:offers",
+      "group": "pricing",
+      "group_label": "Kosten & Angebote",
+      "prompt": {
+        "label": "Preismodelle/Angebote",
+        "description": "Preis-/Tarifangaben (Offer/PriceSpecification) als JSON."
+      },
+      "system": {
+        "path": "sdo:offers",
+        "uri": "sdo:offers",
+        "datatype": "json",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "index": { "keyword": false }
+      }
+    },
+    {
+      "id": "sdo:termsOfService",
+      "group": "pricing",
+      "group_label": "Kosten & Angebote",
+      "prompt": {
+        "label": "Nutzungsbedingungen (ToS)",
+        "description": "URL oder Textfassung der Nutzungsbedingungen."
+      },
+      "system": {
+        "path": "sdo:termsOfService",
+        "uri": "sdo:termsOfService",
+        "datatype": "union(uri,string)",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+
+    {
+      "id": "ccm:privacy_policy",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "Datenschutzerklärung",
+        "description": "URL zur Datenschutz-/Privacy-Policy."
+      },
+      "system": {
+        "path": "ccm:privacy_policy",
+        "uri": "ccm:privacy_policy",
+        "datatype": "uri",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "validation": { "pattern": "^(https?://[^\\s]+)$" },
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "ccm:data_protection",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "Datenschutz-Status",
+        "description": "Einschätzung/Status, z. B. DSGVO-Konformität, AVV vorhanden."
+      },
+      "system": {
+        "path": "ccm:data_protection",
+        "uri": "ccm:data_protection",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "vocabulary": {
+          "type": "open",
+          "concepts": [
+            { "label": "DSGVO-konform (Selbstauskunft)" },
+            { "label": "AV-Vertrag vorhanden" },
+            { "label": "Datenverarbeitung in EU/EWR" },
+            { "label": "Datenverarbeitung außerhalb EU/EWR" },
+            { "label": "Unklar/prüfen" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "sdo:contentRating",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "FSK/Content-Rating",
+        "description": "Alters-/Inhaltsfreigabe (z. B. FSK)."
+      },
+      "system": {
+        "path": "sdo:contentRating",
+        "uri": "sdo:contentRating",
+        "datatype": "string",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true }
+      }
+    },
+    {
+      "id": "sdo:isFamilyFriendly",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "Familienfreundlich",
+        "description": "Kennzeichnet familien-/jugendgeeignete Inhalte."
+      },
+      "system": {
+        "path": "sdo:isFamilyFriendly",
+        "uri": "sdo:isFamilyFriendly",
+        "datatype": "boolean",
+        "multiple": false,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true }
+      }
+    },
+    {
+      "id": "ccm:security",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "IT-Sicherheit",
+        "description": "Hinweise/Standards (z. B. ISO 27001, 2FA, SSO)."
+      },
+      "system": {
+        "path": "ccm:security",
+        "uri": "ccm:security",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": false,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "ccm:interoperability",
+      "group": "compliance",
+      "group_label": "Compliance & Schutz",
+      "prompt": {
+        "label": "Interoperabilität/Standards",
+        "description": "Unterstützte Standards/Protokolle (LTI, SCORM, xAPI, IMS …)."
+      },
+      "system": {
+        "path": "ccm:interoperability",
+        "uri": "ccm:interoperability",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+
+    {
+      "id": "sdo:audience",
+      "group": "audience",
+      "group_label": "Zielgruppe",
+      "prompt": {
+        "label": "Zielgruppen (Audience)",
+        "description": "Anvisierte Nutzergruppen (Lehrende, Lernende, Admins …)."
+      },
+      "system": {
+        "path": "sdo:audience",
+        "uri": "sdo:audience",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+
+    {
+      "id": "ccm:use_cases",
+      "group": "usage",
+      "group_label": "Nutzung & Einsatz",
+      "prompt": {
+        "label": "Verwendungszwecke",
+        "description": "„Ich will …“ (z. B. Video schneiden, kooperativ schreiben)."
+      },
+      "system": {
+        "path": "ccm:use_cases",
+        "uri": "ccm:use_cases",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "index": { "fulltext": true, "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    },
+    {
+      "id": "ccm:modalities",
+      "group": "usage",
+      "group_label": "Nutzung & Einsatz",
+      "prompt": {
+        "label": "Modalitäten",
+        "description": "Analog/Digital, benötigte Software/Hardware, Online/Offline."
+      },
+      "system": {
+        "path": "ccm:modalities",
+        "uri": "ccm:modalities",
+        "datatype": "array",
+        "multiple": true,
+        "required": false,
+        "ask_user": true,
+        "ai_fillable": true,
+        "vocabulary": {
+          "type": "open",
+          "concepts": [
+            { "label": "Digital" },
+            { "label": "Analog" },
+            { "label": "Online" },
+            { "label": "Offline" },
+            { "label": "Benötigt Zusatzsoftware" },
+            { "label": "Benötigt Zusatzhardware" }
+          ]
+        },
+        "index": { "keyword": true },
+        "normalization": { "trim": true, "deduplicate": true }
+      }
+    }
+  ]
+}

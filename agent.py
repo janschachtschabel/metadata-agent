@@ -4,38 +4,58 @@ from openai import OpenAI
 from langgraph.graph import StateGraph, END
 from schema_loader import SchemaManager, Field
 from models import WorkflowState, WorkflowPhase, FieldStatus
+from validator import MetadataValidator
 import json
 import os
 import re
 
 
 class MetadataAgent:
-    """Agent for guiding metadata extraction workflow using GPT-5."""
+    """Agent for guiding metadata extraction workflow using GPT-5-Mini."""
     
-    def __init__(self, api_key: str, model: str = "gpt-5-mini"):
+    def __init__(self, api_key: str = None, model: str = None, base_url: str = None, 
+                 reasoning_effort: str = None, verbosity: str = None):
         """
-        Initialize GPT-5 agent.
+        Initialize metadata extraction agent.
         
         Args:
-            api_key: OpenAI API key
-            model: GPT-5 model variant (gpt-5-mini, gpt-5, gpt-5-nano)
+            api_key: OpenAI API key (default: from OPENAI_API_KEY env)
+            model: Model name (default: from OPENAI_MODEL env or "gpt-5-mini")
+            base_url: OpenAI API base URL (default: from OPENAI_BASE_URL env or None)
+            reasoning_effort: GPT-5 reasoning level - only used for gpt-5* models (default: from GPT5_REASONING_EFFORT env or "minimal")
+            verbosity: Response verbosity - only used for gpt-5* models (default: from GPT5_VERBOSITY env or "low")
         """
-        if model not in ["gpt-5", "gpt-5-mini", "gpt-5-nano"]:
-            raise ValueError(f"Invalid GPT-5 model: {model}. Use gpt-5, gpt-5-mini, or gpt-5-nano")
+        # Load from environment if not provided
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.model = model or os.getenv("OPENAI_MODEL", "gpt-5-mini")
+        self.base_url = base_url or os.getenv("OPENAI_BASE_URL")
         
-        self.client = OpenAI(api_key=api_key)
-        self.model = model
+        # GPT-5 specific parameters (only used if model starts with "gpt-5")
+        self.default_reasoning_effort = reasoning_effort or os.getenv("GPT5_REASONING_EFFORT", "minimal")
+        self.default_verbosity = verbosity or os.getenv("GPT5_VERBOSITY", "low")
         
-        # GPT-5 specific defaults for metadata extraction
-        self.default_reasoning_effort = "minimal"  # Fast extraction
-        self.default_verbosity = "low"  # Concise responses
+        # Check if this is a GPT-5 model
+        self.is_gpt5 = self.model.startswith("gpt-5")
         
+        # Validate
+        if not self.api_key:
+            raise ValueError("OPENAI_API_KEY not provided. Set it via parameter or environment variable.")
+        
+        # Initialize OpenAI client
+        client_kwargs = {"api_key": self.api_key}
+        if self.base_url:
+            client_kwargs["base_url"] = self.base_url
+        self.client = OpenAI(**client_kwargs)
+        
+        # Initialize schema manager and validator
         self.schema_manager = SchemaManager()
+        self.validator = MetadataValidator()
         self.graph = self._build_graph()
     
     def _build_graph(self) -> StateGraph:
         """Build the Langgraph workflow."""
         workflow = StateGraph(WorkflowState)
+
         
         # Add nodes
         workflow.add_node("init", self._init_node)
@@ -618,24 +638,39 @@ class MetadataAgent:
         return state
     
     def _call_gpt5(self, input_text: str, reasoning_effort: str = None, verbosity: str = None) -> Dict[str, Any]:
-        """Call GPT-5 using Responses API."""
-        reasoning_effort = reasoning_effort or self.default_reasoning_effort
-        verbosity = verbosity or self.default_verbosity
+        """Call LLM API - uses GPT-5 Responses API for gpt-5* models, Chat Completions API for others."""
         
         try:
-            response = self.client.responses.create(
-                model=self.model,
-                input=input_text,
-                reasoning={"effort": reasoning_effort},
-                text={"verbosity": verbosity}
-            )
-            return {
-                "output_text": response.output_text,
-                "response_id": response.id,
-                "tokens": response.usage.total_tokens
-            }
+            if self.is_gpt5:
+                # GPT-5 models: Use Responses API with reasoning and verbosity
+                reasoning_effort = reasoning_effort or self.default_reasoning_effort
+                verbosity = verbosity or self.default_verbosity
+                
+                response = self.client.responses.create(
+                    model=self.model,
+                    input=input_text,
+                    reasoning={"effort": reasoning_effort},
+                    text={"verbosity": verbosity}
+                )
+                return {
+                    "output_text": response.output_text,
+                    "response_id": response.id,
+                    "tokens": response.usage.total_tokens
+                }
+            else:
+                # Other models (GPT-4, GPT-3.5, etc.): Use standard Chat Completions API
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": input_text}],
+                    temperature=0.1  # Low temperature for consistent extraction
+                )
+                return {
+                    "output_text": response.choices[0].message.content,
+                    "response_id": response.id,
+                    "tokens": response.usage.total_tokens
+                }
         except Exception as e:
-            print(f"GPT-5 API Error: {e}")
+            print(f"LLM API Error: {e}")
             return {"output_text": f"Error: {str(e)}", "response_id": None, "tokens": 0}
     
     def _detect_content_types(self, text: str, available_types: List[str]) -> List[str]:
@@ -666,6 +701,71 @@ Wähle die am besten passende Kategorie."""
         except Exception as e:
             print(f"Error detecting content types: {e}")
             return []
+    
+    def _validate_and_normalize_fields(self, extracted: Dict[str, Any], fields: List[Field]) -> tuple:
+        """
+        Validate and normalize extracted field values.
+        
+        Returns:
+            tuple: (normalized_data, validation_warnings)
+        """
+        normalized = {}
+        warnings = []
+        
+        # Create field lookup
+        field_map = {f.id: f for f in fields}
+        
+        for field_id, value in extracted.items():
+            field = field_map.get(field_id)
+            if not field:
+                warnings.append(f"⚠️ Unbekanntes Feld: {field_id}")
+                continue
+            
+            try:
+                # Normalize the value according to schema rules
+                normalized_value = self.validator.normalize_value(value, field)
+                
+                # Validate vocabulary if defined
+                if field.vocabulary and normalized_value:
+                    vocab_type = field.vocabulary.get("type", "open")
+                    concepts = field.get_vocabulary_concepts()
+                    
+                    if vocab_type == "closed" and concepts:
+                        # Check if value is in allowed concepts
+                        allowed_labels = [c.get("label", "") for c in concepts]
+                        
+                        if isinstance(normalized_value, list):
+                            invalid = [v for v in normalized_value if v not in allowed_labels]
+                            if invalid:
+                                warnings.append(
+                                    f"⚠️ **{field.prompt.get('label', field_id)}**: "
+                                    f"Ungültige Werte: {', '.join(invalid)}\n"
+                                    f"   Erlaubt: {', '.join(allowed_labels[:5])}{'...' if len(allowed_labels) > 5 else ''}"
+                                )
+                        else:
+                            if normalized_value not in allowed_labels:
+                                warnings.append(
+                                    f"⚠️ **{field.prompt.get('label', field_id)}**: "
+                                    f"'{normalized_value}' ist nicht in der erlaubten Liste.\n"
+                                    f"   Erlaubt: {', '.join(allowed_labels[:5])}{'...' if len(allowed_labels) > 5 else ''}"
+                                )
+                
+                # Validate datatype
+                expected_type = field.datatype
+                if expected_type == "string" and not isinstance(normalized_value, (str, list)):
+                    warnings.append(f"⚠️ **{field.prompt.get('label', field_id)}**: Erwartet Text, erhalten {type(normalized_value).__name__}")
+                elif expected_type == "date" and isinstance(normalized_value, str):
+                    # Basic date validation
+                    if not re.match(r'^\d{4}-\d{2}-\d{2}', normalized_value):
+                        warnings.append(f"⚠️ **{field.prompt.get('label', field_id)}**: Ungültiges Datumsformat (erwartet: YYYY-MM-DD)")
+                
+                normalized[field_id] = normalized_value
+                
+            except Exception as e:
+                warnings.append(f"⚠️ Fehler bei **{field.prompt.get('label', field_id)}**: {str(e)}")
+                normalized[field_id] = value  # Use original value on error
+        
+        return normalized, warnings
     
     def _extract_fields(self, text: str, fields: List[Field], current_metadata: Dict) -> Dict[str, Any]:
         """Extract field values from text using GPT-5."""
@@ -704,7 +804,7 @@ Verwende null für Felder, die nicht extrahiert werden können.
 Für Listen verwende Arrays. Für Einzelwerte verwende Strings."""
         
         try:
-            response = self._call_gpt5(prompt, reasoning_effort="low", verbosity="low")
+            response = self._call_gpt5(prompt, reasoning_effort="minimal", verbosity="low")
             content = response["output_text"].strip()
             
             # Extract JSON from response
@@ -712,7 +812,18 @@ Für Listen verwende Arrays. Für Einzelwerte verwende Strings."""
             if json_match:
                 extracted = json.loads(json_match.group())
                 # Filter out null values
-                return {k: v for k, v in extracted.items() if v is not None}
+                raw_extracted = {k: v for k, v in extracted.items() if v is not None}
+                
+                # Validate and normalize
+                normalized, validation_warnings = self._validate_and_normalize_fields(raw_extracted, fields)
+                
+                # Log warnings
+                if validation_warnings:
+                    print(f"🔍 Validierung: {len(validation_warnings)} Warnungen")
+                    for w in validation_warnings:
+                        print(f"  {w}")
+                
+                return normalized
             else:
                 return {}
         except Exception as e:
